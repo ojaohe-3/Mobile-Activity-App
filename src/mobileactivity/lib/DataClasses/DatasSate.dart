@@ -1,4 +1,4 @@
-import 'package:mobileactivity/playstate.dart';
+import 'package:mobileactivity/DataClasses/PlayState.dart';
 
 class DataState{
   List<PlayState>? states;
@@ -14,7 +14,7 @@ class DataState{
   }
 
   void plot(PlayState state){
-    // find the states data that the user has sown
+    // find the states data that the user has saved
   }
 
   void listerner(){
@@ -24,6 +24,10 @@ class DataState{
 
   void loadProcedure(){
     // todo load from the local files
+  }
+  void syncProcedure(){
+    //todo
+    // fetch data classes from api given profile
   }
  }
 

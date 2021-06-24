@@ -13,3 +13,4 @@ class _SettingsState extends State<Settings> {
     return Container();
   }
 }
+//todo as of now, add device selection, privacy settings, profile settings, personalization of the fonts.

@@ -1,5 +1,6 @@
 
 import 'package:flutter/material.dart';
+import 'package:mobileactivity/DataClasses/PlayState.dart';
 import 'package:mobileactivity/widgets/Header.dart';
 
 class Home extends StatefulWidget {
@@ -10,10 +11,11 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
+  PlayState? state;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar( //todo, fix a statless widget for the header
+      appBar: AppBar(
         title: Header(),
         iconTheme: IconThemeData(
           color: Colors.blue[900]
@@ -29,7 +31,8 @@ class _HomeState extends State<Home> {
             children: [
               TextButton(
                 onPressed: (){
-                  Navigator.pushNamed(context, '/map');
+                  if(this.state != null)
+                    Navigator.pushNamed(context, '/setup/state', arguments: state);
                 },
                 style: TextButton.styleFrom(
                     textStyle: const TextStyle(fontSize: 20)
@@ -44,8 +47,8 @@ class _HomeState extends State<Home> {
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
               TextButton(
-                onPressed: (){
-                  Navigator.pushNamed(context, '/setup');
+                onPressed: () async {
+                  state = await Navigator.pushNamed(context, '/setup') as PlayState;
                 },
                 style: TextButton.styleFrom(
                     textStyle: const TextStyle(fontSize: 20)
@@ -80,7 +83,7 @@ class _HomeState extends State<Home> {
                 style: TextButton.styleFrom(
                     textStyle: const TextStyle(fontSize: 20)
                 ),
-                child: const Text('Device'),
+                child: const Text('Profile'),
               ),
             ],
           ),
