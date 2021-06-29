@@ -29,7 +29,7 @@ profileAPI.get("/", (req : Request, res : Response) => {
 profileAPI.post("/", (req : Request, res : Response) => {
     try {
         const data = req.body as IProfile
-        UserSessions.Instance.addActiveUser(createProfile(data))
+        UserSessions.Instance.addUser(createProfile(data))
         const response : IResponse = {
             message: "Success! user added!",
             data: data,
@@ -45,8 +45,25 @@ profileAPI.post("/", (req : Request, res : Response) => {
         res.status(500).json(response)
     }
 });
-profileAPI.put("/", (req : Request, res : Response) => {
-
+profileAPI.put("/:id", (req : Request, res : Response) => {
+    try {
+        const id = req.params.id
+        const data = req.body as IProfile
+        UserSessions.Instance.replaceUser(id, createProfile(data))
+        const response : IResponse = {
+            message: "Success! user added!",
+            data: data,
+            status: 200
+        }
+        res.json(response)
+    } catch (error) {
+        const response : IResponse = {
+            message: "Error, could not process data",
+            error: error,
+            status: 500
+        }
+        res.status(500).json(response)
+    }
 });
 
 export default profileAPI;

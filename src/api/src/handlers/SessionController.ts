@@ -1,16 +1,17 @@
 import assert from "assert";
 import GameSession from "../objects/GameSession"
-import DBConnector from "./DBConnector";
+import DBSession from "./DB/DBSession";
+
 
 export default class SessionController{
     private static instance? : SessionController;
-    private _existingSession: Array<String>;
+    private _existingSession: Array<string>;
     private _sessions : Map<string, GameSession> 
     
 
     public constructor(){
         this._sessions = new Map<string, GameSession>();
-        this._existingSession = DBConnector.Instance.getExistingSessionsIDs();
+        this._existingSession = DBSession.instance.getIndexes();
     }
 
 
@@ -24,10 +25,12 @@ export default class SessionController{
 
     public setSession(session : GameSession){
         const unloaded = this._existingSession.filter( e => e === session.id);
+        
         if(unloaded.length === 1){
-            session = DBConnector.Instance.getSessionByID(session.id);
+            session = DBSession.instance.getById(session.id);
         }else{
-            DBConnector.Instance.setNewSession(session);
+            DBSession.instance.addItem(session);
+            this._existingSession.push(session.id);
         }
         this._sessions.set(session.id, session);
     }
@@ -36,9 +39,12 @@ export default class SessionController{
         if(this._sessions.has(id))
             return this._sessions.get(id)!;
         else {
+            // todo remove assert, make a syncronization call to the database if we dont find it.
             const unloaded = this._existingSession.filter( e => e === id);
-            assert(unloaded.length == 1);
-            return DBConnector.Instance.getSessionByID(unloaded[0]);
+            assert(unloaded.length === 1);
+            const data = DBSession.instance.getById(unloaded[0]);
+            this._sessions.set(id, data);
+            return data;
 
         }
     }
