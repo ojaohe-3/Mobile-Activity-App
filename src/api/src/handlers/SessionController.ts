@@ -1,9 +1,11 @@
 import assert from "assert";
-import GameSession from "../objects/GameSession"
+import GameSession, { ISession } from "../objects/GameSession"
 import DBSession from "./DB/DBSession";
 
 
 export default class SessionController{
+
+    
     private static instance? : SessionController;
     private _existingSession: Array<string>;
     private _sessions : Map<string, GameSession> 
@@ -48,5 +50,14 @@ export default class SessionController{
 
         }
     }
+    public items(): Map<string, GameSession> {
+        const s = new Map<string, GameSession>();
+        this._sessions.forEach((session, id) => {s.set(id, session)})
+        return s;
+    }
 
+    public update(session: ISession) {
+        const old = this.getSession(session.id);
+        old.update(session.totalSteps, session.current);
+    }
 }

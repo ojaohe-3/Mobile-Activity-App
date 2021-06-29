@@ -2,6 +2,7 @@ import cors from "cors";
 import express, { Application, NextFunction, Request, Response } from "express";
 import organizationAPI from "./models/OrganizationAPI";
 import profileAPI from "./models/ProfileAPI";
+import sessionAPI from "./models/SessionAPI";
 
 
 const dotenv = require("dotenv");
@@ -60,7 +61,7 @@ app.use((err: ResponseError, req: Request, res: Response, next: NextFunction) =>
 
 app.use('/api/v1/profile/', profileAPI);
 app.use('/api/v1/organization/', organizationAPI);
-
+app.use('/api/v1/sessions/', sessionAPI);
 
 
 const port = process.env.PORT || 5000;
