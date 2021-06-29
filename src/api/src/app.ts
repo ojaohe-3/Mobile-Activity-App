@@ -1,5 +1,11 @@
 import cors from "cors";
 import express, { Application, NextFunction, Request, Response } from "express";
+import organizationAPI from "./models/OrganizationAPI";
+import profileAPI from "./models/ProfileAPI";
+
+
+const dotenv = require("dotenv");
+dotenv.config();
 
 declare interface ResponseError extends Error {
   status?: number
@@ -52,8 +58,12 @@ app.use((err: ResponseError, req: Request, res: Response, next: NextFunction) =>
     res.send("Error Occured!\nPlease try again later");
   })
 
-// app.use('/api/v1', member);
-// app.use('/api/v1/select', control);
-// app.use('/api/v1/type', type);
+app.use('/api/v1/profile/', profileAPI);
+app.use('/api/v1/organization/', organizationAPI);
+
+
+
+const port = process.env.PORT || 5000;
+app.set("port", port);
 
 export default app;

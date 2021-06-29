@@ -1,23 +1,39 @@
-import User from "./User"
+import Profile from "./Profile"
 
-export default class Organization{
-    private _id: string
-    private _name: string
-    private _members: Array<User> //todo
 
-    constructor(_id: string, _name: string, _members: Array<User>){
-        this._id = _id
-        this._name = _name
-        this._members = _members
+export interface IOrg{
+    readonly id: string
+    readonly name: string
+    readonly members: Array<Profile>
+}
+
+export function createOrganization(org: IOrg) : Organization {
+    return new Organization(
+        org.id,
+        org.name, 
+        org.members)
+}
+
+export default class Organization implements IOrg {
+    id: string
+    name: string
+    members: Array<Profile> 
+
+    constructor(_id: string, _name: string, _members: Array<Profile>){
+        this.id = _id
+        this.name = _name
+        this.members = _members
+        
     }
 
-    public get id() : string{
-        return this._id
+    public add(member: Profile) : void {
+        this.members.push(member)
     }
-    public get name() : string{
-        return this._name
-    }
-    public get members() : Array<User>{ 
-        return this._members
+
+    public remove(_id: String) : void {
+        let index = -1
+        const filt = this.members.filter((p,i) => {p.id === _id; index = i;})
+        if(index >= 0)
+            this.members.splice(index, 1)
     }
 }
