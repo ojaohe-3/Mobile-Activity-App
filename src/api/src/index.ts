@@ -1,12 +1,5 @@
-import app from "./app";
-import server from "./server";
 
-const dotenv = require("dotenv");
-dotenv.config();
+import ProgramController from "./handlers/ProgramController";
 
-const port = process.env.PORT || 5000;
-
-server.listen(app.get("port"), () => {
-  console.log(`Server Listening on port ${port}`);
-});
+const contoller = ProgramController.instance;
 

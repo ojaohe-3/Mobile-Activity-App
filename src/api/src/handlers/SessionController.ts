@@ -5,6 +5,7 @@ import DBSession from "./DB/DBSession";
 
 export default class SessionController{
 
+    //todo add datamonitors that assosiate statistic to user.
     
     private static instance? : SessionController;
     private _existingSession: Array<string>;

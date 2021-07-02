@@ -11,3 +11,20 @@ export default interface IDBConnector {
   getIndexes(): string[],
 
 }
+
+export class DBConnector{
+  private static _instance? : DBConnector;
+  private ready = false;
+
+  public static get instance(): DBConnector{
+    if(!this._instance){
+      this._instance = new DBConnector();
+    }
+    return this._instance;
+  }
+
+  constructor(){
+    // this.connectDatabase();
+  }
+
+}

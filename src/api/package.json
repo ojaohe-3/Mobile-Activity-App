@@ -21,10 +21,13 @@
     "@types/cors": "^2.8.10",
     "@types/dotenv": "^8.2.0",
     "@types/express": "^4.17.12",
+    "@types/sqlite3": "^3.1.7",
     "@types/ws": "^7.4.5",
     "cors": "^2.8.5",
     "dotenv": "^10.0.0",
     "express": "^4.17.1",
+    "sqlite": "^4.0.23",
+    "sqlite3": "^5.0.2",
     "ws": "^7.5.0"
   }
 }

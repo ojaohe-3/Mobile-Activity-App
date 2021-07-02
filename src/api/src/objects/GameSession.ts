@@ -1,7 +1,7 @@
 import { EventHandler, IEvent } from "../handlers/EventHandler"
 import {GeoCoordinates, GeoCoordinatesBound} from "./GeoCoordinates"
 import Organization from "./Organization"
-import Profile from "./Profile"
+import Profile, { IProfile } from "./Profile"
 
 export interface ISession {
     readonly org : Organization
@@ -15,6 +15,10 @@ export interface ISession {
     current: GeoCoordinates
     totalSteps: number
 }
+export interface SessionUpdate{
+    nStep: number,
+    nPos: GeoCoordinates
+  }
 
 export function createSession(  
     session: ISession): GameSession{
@@ -31,6 +35,7 @@ export function createSession(
             session.totalSteps
         );
     }
+
 export default class GameSession implements ISession{
     org : Organization
     profiles : Array<Profile>
@@ -71,8 +76,8 @@ export default class GameSession implements ISession{
     this._eventHandler = new EventHandler()
   }
 
-  public updateAvailable() : IEvent{
-      return this._eventHandler.expose()
+  public updateEvent(handler : (arg0 : SessionUpdate) => void) : void{
+        this._eventHandler.expose().on("update", handler)
   }
 
   public addprofile(profile: Profile) : void {
@@ -86,11 +91,11 @@ export default class GameSession implements ISession{
         this.profiles.splice(index, 1)
   }
   //todo maybe we want to calculate the new geo point by steps in this api....
+  //fixme any ambiguity with session update, only update sends a delta, and new position, or we recive the new totalstep as well.
   public update(delta_steps: number, npos: GeoCoordinates){
       this.totalSteps += delta_steps;
       this.current = npos;
-      this._eventHandler.run('update');
+      this._eventHandler.run('update', { nStep : this.totalSteps, nPos :this.current} as SessionUpdate);
   }
-
 
 }
