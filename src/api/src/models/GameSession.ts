@@ -37,6 +37,7 @@ export function createSession(
     }
 
 export default class GameSession implements ISession{
+
     org : Organization
     id: string
     name : string
@@ -48,7 +49,7 @@ export default class GameSession implements ISession{
     totalSteps: number
     distance: string
     private _eventHandler : EventHandler
-
+    private _members : Array<Profile>
 
   constructor(
     _org: Organization, 
@@ -74,10 +75,17 @@ export default class GameSession implements ISession{
     this.totalSteps = _totalSteps
     this.distance = _distance
     this._eventHandler = new EventHandler()
+    this._members = new Array<Profile>();
     }
 
   public updateEvent(handler : (arg0 : SessionUpdate) => void) : void{
         this._eventHandler.expose().on("update", handler)
+  }
+  public addprofile(user: Profile) {
+    this._members.push(user)
+  }
+  public get members() : Array<Profile>{
+    return this._members
   }
 
   //TODO maybe we want to calculate the new geo point by steps in this api....
