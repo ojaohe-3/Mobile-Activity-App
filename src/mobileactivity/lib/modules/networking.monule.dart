@@ -9,7 +9,9 @@ enum Endpoints{
 }
 
 class Sockets extends Subject{}
-
+enum APIs{
+  Session, Organization, Profile
+}
 class ApiCalls {
   static Future<dynamic>? getDirectionApi(LatLng start, LatLng end) async {
     //todo add path
@@ -57,15 +59,42 @@ class ApiCalls {
     }
   }
 
-  static Future<dynamic?> getFromSessionAPI(dynamic data) async {
-      String? url = await dotenv.env['ERGO_API_CREATE_SESSION_ENDPOINT'];
-      try{
+  static Future<dynamic>? getAppAPI({required APIs api, String? id}) async {
+    await dotenv.load(fileName: 'lib/.env');
+    String? url = dotenv.env['API_ENDPOINT'];
+    if (url == null) {
+      throw Exception(
+          "API endpoint is missing in the .env file! please add in .env ");
+    }
+    url = url + api.toString();
+    if(id != null) url = url + id;
 
-      }catch(e){
-        print(e);
-        return null;
-      }
+    try{
+      final req = await Dio().get(url);
+      if (req.statusCode == 200) return req.data;
+      else throw Exception("Request failed!");
+    }catch(e){
+      print(e);
+      return null;
+    }
   }
+  
+  static Future<dynamic>? postAppAPI(APIs api, dynamic data) async {
+    await dotenv.load(fileName: 'lib/.env');
+    String? url = dotenv.env['API_ENDPOINT'];
+    if (url == null) {
+      throw Exception(
+          "API endpoint is missing in the .env file! please add in .env ");
+    }
+    url = url + api.toString();
 
-
+    try{
+      final req = await Dio().post(url, data: data);
+      if (req.statusCode == 200) return req.data;
+      else throw Exception("Request failed!");
+    }catch(e){
+      print(e);
+      return null;
+    }
+  }
 }

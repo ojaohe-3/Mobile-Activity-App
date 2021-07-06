@@ -42,36 +42,72 @@ class _StateDisplayState extends State<StateDisplay> {
         backgroundColor: Colors.white,
       ),
       body: Column(children: [
-        SizedBox(
-          height: 300,
-          child: GoogleMap(
-            myLocationButtonEnabled: false,
-            zoomControlsEnabled: false,
-            initialCameraPosition: _initPos,
-            cameraTargetBounds: _initBounds,
-            // onMapCreated: (controller) => _googleMapController = controller,
-            markers: {
-              Marker(markerId: MarkerId('start'), position: _state.start),
-              Marker(markerId: MarkerId('end'), position: _state.end),
-              Marker(markerId: MarkerId('current'), position: _state.current),
-            },
-            polylines: {
-              Polyline(
-                polylineId: PolylineId("Path"),
-                points: _state.route,
-                color: Colors.red,
-                width: 8,
+        Card(
+            elevation: 2,
+            color: Colors.black,
+            child: SizedBox(
+              height: 300,
+              child: GoogleMap(
+                myLocationButtonEnabled: false,
+                zoomControlsEnabled: false,
+                initialCameraPosition: _initPos,
+                cameraTargetBounds: _initBounds,
+                // onMapCreated: (controller) => _googleMapController = controller,
+                markers: {
+                  Marker(markerId: MarkerId('start'), position: _state.start),
+                  Marker(markerId: MarkerId('end'), position: _state.end),
+                  Marker(
+                      markerId: MarkerId('current'), position: _state.current),
+                },
+                polylines: {
+                  Polyline(
+                    polylineId: PolylineId("Path"),
+                    points: _state.path,
+                    color: Colors.red,
+                    width: 8,
+                  )
+                },
+              ),
+            )),
+        Card(
+            child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+              Padding(
+                padding: const EdgeInsets.all(10.0),
+                child: SizedBox(
+                  width: 150,
+                    child: Text('Title: ${_state.title}',
+                        maxLines: 4,
+                        softWrap: false,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(fontSize: 20))),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(10.0),
+                child: SizedBox(
+                    child: Text(
+                  'PlaceHolder',
+                  style: TextStyle(fontSize: 20),
+                  overflow: TextOverflow.ellipsis,
+                  maxLines: 1,
+                  softWrap: false,
+                )),
               )
-            },
-          ),
-        ),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            Text('Title: ${_state.id}')
-          ],
+            ])),
+        Card(
+          child: SizedBox(
+              child: ProgressWidget(
+            state: _state,
+          )),
         )
       ]),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Navigator.of(context).pushNamed('/map', arguments: this._state);
+        },
+        child: Icon(Icons.arrow_right_alt),
+      ),
     );
   }
 }

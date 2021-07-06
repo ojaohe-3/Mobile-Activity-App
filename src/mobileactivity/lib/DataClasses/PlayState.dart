@@ -1,55 +1,109 @@
+import 'dart:convert';
 import 'dart:math';
 
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:json_annotation/json_annotation.dart';
 
-@JsonSerializable()
-class PlayState{
+
+class PlayState {
 
   final LatLng start;
   final LatLng end;
-  late LatLng current;
-  int totalSteps = 0;
-  final String source; // networking, source of our information, api related todo.
-  final String id;
-  final List<LatLng> route;
-  LatLngBounds? bounds;
+  LatLng current;
+  int totalSteps;
+  final String id; // identifier token
+  final String title;
+  final List<LatLng> path;
+  final LatLngBounds bounds;
 
-  PlayState(
-    this.start,
-    this.end,
-    this.source,
-    this.route,
-    this.id){
-    this.current = this.start;
+  final String distance;
+  final Org org;
+  PlayState({
+    required this.start,
+    required this.end,
+    required this.path,
+    required this.id,
+    required this.title,
+    required this.totalSteps,
+    required this.current,
+    required this.bounds,
+    required this.distance,
+    required this.org
+  });
 
-    // generate bounds
-    LatLng vec = LatLng(end.latitude-start.latitude, end.longitude - start.longitude);
-    double pad = sqrt(pow(vec.longitude, 2)+ pow(vec.latitude, 2))*0.1;
-    LatLng sw = LatLng(min(start.latitude, end.latitude)-pad,min(start.longitude, end.longitude)-pad);
-    LatLng ne = LatLng(max(start.latitude, end.latitude)+pad,max(start.longitude, end.longitude)+pad);
-
-    this.bounds = LatLngBounds(southwest: sw, northeast: ne);
-  }
   static Future<PlayState?> generateInstanceFromAPI(String id) async {
     // todo
     // access api for specific session, return the playstate and save to local sessions, null if it failed
   }
-  static PlayState? generateInstanceFromFile(String? file){
+
+  static PlayState? generateInstanceFromFile(String? file) {
     // return PlayState(LatLng(0,0), LatLng(0,0), 'source', '_id', 'details'); //todo
   }
-  void stateListener(){
+
+  void stateListener() {
     // todo
     // a listener that fires when new information on the state is retrieved.
     // if we have an external module it will use the source. otherwise will ignore this method
   }
 
+
+  // factory PlayState.fromJson(Map<String, dynamic> json) :
+  Map<String, dynamic> toJson() =>
+      {
+        'id': this.id,
+        'title': this.title,
+        'start': this.start.toJson(),
+        'end': this.start.toJson(),
+        'current': this.current.toJson(),
+        'totalSteps': this.totalSteps,
+        'path': this.path.map((e) => e.toJson()).toList(),
+        'bounds': this.bounds.toJson(),
+        'distance': this.distance,
+        'org' : this.org.toJson()
+      };
+
+
+  factory PlayState.fromJson(Map<String, dynamic> json) => //todo this might need support function for nested types
+      PlayState(start: json['start'],
+          end: json['end'],
+          path: json['route'],
+          id: json['id'],
+          title: json['title'],
+          totalSteps: json['totalSteps'],
+          current: json['current'],
+          bounds: json['bounds'],
+          distance: json['distance'],
+          org: Org.fromJson(json['org']));
 }
 
 //helper class for the setup map
-class PointSelection{
+class PointSelection {
   final LatLng start;
   final LatLng end;
   final List<LatLng> polyLine;
-  PointSelection(this.start, this.end, this.polyLine);
+  final String distance;
+
+  PointSelection(this.start, this.end, this.polyLine, this.distance);
+}
+class Org{
+  final String id;
+  final String name;
+  final List<String> members;
+
+  Org({required this.id, required this.name, required this.members});
+
+  factory Org.fromJson(Map<String, dynamic> json) =>
+    Org(
+      id: json['id'],
+      name: json['name'],
+      members: json['members'] as List<String>
+    );
+
+  Map<String, dynamic> toJson() =>
+      {
+        'id': this.id,
+        'name': this.name,
+        'members': this.members
+      };
+
+
 }

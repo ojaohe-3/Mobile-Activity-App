@@ -62,5 +62,11 @@ class Util{
     }
     return path.last; //could not translate
   }
-  //todo
+  static LatLngBounds generateBounds(LatLng start, LatLng end,num? padMul){
+    LatLng vec = LatLng(end.latitude-start.latitude, end.longitude - start.longitude);
+    double pad = sqrt(pow(vec.longitude, 2)+ pow(vec.latitude, 2))*(padMul != null ? padMul! : 0.1);
+    LatLng sw = LatLng(min(start.latitude, end.latitude)-pad,min(start.longitude, end.longitude)-pad);
+    LatLng ne = LatLng(max(start.latitude, end.latitude)+pad,max(start.longitude, end.longitude)+pad);
+    return LatLngBounds(southwest: sw, northeast: ne);
+  }
 }

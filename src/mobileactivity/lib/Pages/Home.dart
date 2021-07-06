@@ -1,6 +1,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:mobileactivity/DataClasses/PlayState.dart';
+import 'package:mobileactivity/modules/filesystem.module.dart';
 import 'package:mobileactivity/widgets/Header.dart';
 
 class Home extends StatefulWidget {
@@ -11,7 +12,6 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-  PlayState? state;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -30,8 +30,9 @@ class _HomeState extends State<Home> {
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
               TextButton(
-                onPressed: (){
-                  if(this.state != null)
+                onPressed: () async {
+                  var state = await FileModule.loadData("local_state_last.json");
+                  if(state != null)
                     Navigator.pushNamed(context, '/setup/state', arguments: state);
                 },
                 style: TextButton.styleFrom(
@@ -48,14 +49,13 @@ class _HomeState extends State<Home> {
             children: [
               TextButton(
                 onPressed: () async {
-                  state = await Navigator.pushNamed(context, '/setup') as PlayState;
+                  await Navigator.pushNamed(context, '/setup');
                 },
                 style: TextButton.styleFrom(
                     textStyle: const TextStyle(fontSize: 20)
                 ),
                 child: const Text('New Session'),
               ),
-
             ],
           ),
           SizedBox(height: 50,),

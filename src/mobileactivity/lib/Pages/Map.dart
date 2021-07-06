@@ -5,6 +5,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:mobileactivity/DataClasses/EventObserverPattern.dart';
 import 'package:mobileactivity/DataClasses/PlayState.dart';
 import 'package:mobileactivity/modules/bluetooth.module.dart';
+import 'package:mobileactivity/widgets/Header.dart';
 
 class GMap extends StatefulWidget {
   const GMap({Key? key}) : super(key: key);
@@ -24,6 +25,22 @@ class _GMapState extends State<GMap> implements Observer{
   Marker? _current;
   @override
   void initState() {
+
+
+    //todo ask premission from the user if we need to setup device, then if
+    // BluetoothModule.instance.init();
+    // BluetoothModule.instance.add(this);
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+
+    this._googleMapController.dispose();
+    super.dispose();
+  }
+  @override
+  Widget build(BuildContext context) {
     _state = ModalRoute.of(context)!.settings.arguments as PlayState;
 
     _initPos = CameraPosition(
@@ -32,23 +49,17 @@ class _GMapState extends State<GMap> implements Observer{
     );
     _initBound = CameraTargetBounds(_state.bounds);
     _start = Marker(markerId: MarkerId('start'), position: _state.start);
-    _end = Marker(markerId: MarkerId('end'), position: _state.start);
-    _current = Marker(markerId: MarkerId('current'), position: _state.start);
-
-    //todo ask premission from the user if we need to setup device, then if
-    BluetoothModule.instance.init();
-    BluetoothModule.instance.add(this);
-    super.initState();
-  }
-
-  @override
-  void dispose() {
-    this._googleMapController.dispose();
-    super.dispose();
-  }
-  @override
-  Widget build(BuildContext context) {
+    _end = Marker(markerId: MarkerId('end'), position: _state.end);
+    _current = Marker(markerId: MarkerId('current'), position: _state.current);
     return Scaffold(
+        appBar: AppBar(
+          title: Header(),
+          iconTheme: IconThemeData(
+              color: Colors.blue[900]
+          ),
+          centerTitle: true,
+          backgroundColor: Colors.white70,
+        ),
       body: GoogleMap(
         myLocationButtonEnabled: false,
         zoomControlsEnabled: false,
@@ -60,6 +71,15 @@ class _GMapState extends State<GMap> implements Observer{
           if(_current != null) _current!,
         },
         cameraTargetBounds: _initBound,
+        polylines: {
+          Polyline(
+              polylineId: PolylineId('route'),
+              points: _state.path,
+              color: Colors.red,
+              width: 5,
+
+          )
+        },
       )
     );
   }

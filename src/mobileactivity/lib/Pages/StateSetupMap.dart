@@ -37,7 +37,7 @@ class _StateSetupMapState extends State<StateSetupMap> {
   Marker? _start;
   Marker? _end;
   List<LatLng>? polyLine;
-
+  String distance = "0";
   //todo add support for multiple markers
 
   final CameraPosition _initPos = CameraPosition(
@@ -71,10 +71,12 @@ class _StateSetupMapState extends State<StateSetupMap> {
       dynamic route = await ApiCalls.getDirectionApi(
           _start!.position, _end!.position);
       route = route['routes'][0];
+      print(route);
       PolylinePoints polylinePoints = PolylinePoints();
+      // distance = route['']
 
 
-      setState(() {
+          setState(() {
         polyLine =
             polylinePoints.decodePolyline(route['geometry'])
                 .map((e) => LatLng(e.latitude, e.longitude))
@@ -115,7 +117,7 @@ class _StateSetupMapState extends State<StateSetupMap> {
             ? () async {
                 var confirm = await createAlert(context);
                 if(confirm['confirm'])
-                  Navigator.of(context).pop(PointSelection(this._start!.position, this._end!.position, this.polyLine!));
+                  Navigator.of(context).pop(PointSelection(this._start!.position, this._end!.position, this.polyLine!, this.distance));
               }
             : null,
         backgroundColor: Theme.of(context).primaryColor,

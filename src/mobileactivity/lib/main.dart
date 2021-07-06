@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:mobileactivity/Pages/Home.dart';
 import 'package:mobileactivity/Pages/Map.dart';
+import 'package:mobileactivity/Pages/OrgLoad.dart';
+import 'package:mobileactivity/Pages/SelectLoader.dart';
 import 'package:mobileactivity/Pages/Settings.dart';
 import 'package:mobileactivity/Pages/StateSetupMap.dart';
 import 'package:mobileactivity/Pages/StateSetupDisplay.dart';
@@ -21,6 +23,8 @@ void main() {
         '/setup/map': (context) => StateSetupMap(),
         '/setup/state': (context) => StateDisplay(),
         '/room/select': (context) => SelectState(),
+        '/room/select/load': (context) => LoadSelect(),
+        '/setup/state/load': (context) => OrgLoad(),
         '/map': (context) => GMap(),
         '/settings': (context) => Settings(),
         '/statistics': (context) => StatisticDisplay(),
