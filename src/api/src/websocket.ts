@@ -5,8 +5,8 @@ import { EventHandler, IEvent } from "./handlers/EventHandler"
 import SessionController from "./handlers/SessionController"
 import UserSessions from "./handlers/UserSessions"
 import { createSession, ISession, SessionUpdate } from "./objects/GameSession"
-import { GeoCoordinates } from "./objects/GeoCoordinates"
-import { createProfile, IProfile } from "./objects/Profile"
+import { GeoCoordinates } from "./models/geoCoordinates.model"
+import { createProfile, IProfile } from "./models/Profile"
 
 interface IReciveFormat{
   type: string,

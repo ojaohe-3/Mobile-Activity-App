@@ -1,8 +1,8 @@
 import cors from "cors";
 import express, { Application, NextFunction, Request, Response } from "express";
-import organizationAPI from "./models/OrganizationAPI";
-import profileAPI from "./models/ProfileAPI";
-import sessionAPI from "./models/SessionAPI";
+import organizationAPI from "./routers/OrganizationAPI";
+import profileAPI from "./routers/ProfileAPI";
+import sessionAPI from "./routers/SessionAPI";
 
 
 const dotenv = require("dotenv");

@@ -1,7 +1,7 @@
 import { Router, Request, Response } from "express";
 import UserSessions from "../handlers/UserSessions";
-import Profile, { createProfile, IProfile } from "../objects/Profile";
-import IResponse from "./IResponse";
+import Profile, { createProfile, IProfile } from "../models/Profile";
+import IResponse from "../models/response.model";
 
 const profileAPI = Router();
 const handler = UserSessions.Instance;

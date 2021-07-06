@@ -1,5 +1,5 @@
 import { EventHandler, IEvent } from "../handlers/EventHandler"
-import {GeoCoordinates, GeoCoordinatesBound} from "./GeoCoordinates"
+import {GeoCoordinates, GeoCoordinatesBound} from "../models/geoCoordinates.model"
 import Organization from "./Organization"
 import Profile, { IProfile } from "./Profile"
 

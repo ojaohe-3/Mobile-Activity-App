@@ -1,7 +1,7 @@
 import { Router, Request, Response } from "express";
 import SessionController from "../handlers/SessionController";
 import { createSession, ISession } from "../objects/GameSession";
-import IResponse from "./IResponse";
+import IResponse from "../models/response.model";
 //TODO authentication
 const sessionAPI = Router();
 const handler = SessionController.Instance;
