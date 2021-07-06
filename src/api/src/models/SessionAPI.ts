@@ -2,7 +2,7 @@ import { Router, Request, Response } from "express";
 import SessionController from "../handlers/SessionController";
 import { createSession, ISession } from "../objects/GameSession";
 import IResponse from "./IResponse";
-//todo authentication
+//TODO authentication
 const sessionAPI = Router();
 const handler = SessionController.Instance;
 
@@ -22,7 +22,7 @@ sessionAPI.get("/:id", (req : Request, res : Response) => {
 });
 
 sessionAPI.get("/", (req : Request, res : Response) => {
-    //todo attribute security, only list for members
+    //TODO attribute security, only list for members
     res.json(handler.items().values);
 });
 

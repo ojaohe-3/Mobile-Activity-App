@@ -61,8 +61,8 @@ app.use((err: ResponseError, req: Request, res: Response, next: NextFunction) =>
 
 app.use('/api/v1/profile/', profileAPI);
 app.use('/api/v1/organization/', organizationAPI);
-app.use('/api/v1/sessions/', sessionAPI);
-//todo add a statistics api to get statistics from specific sessions and total from all sessions
+app.use('/api/v1/session/', sessionAPI);
+//TODO add a statistics api to get statistics from specific sessions and total from all sessions
 
 const port = process.env.PORT || 5000;
 app.set("port", port);

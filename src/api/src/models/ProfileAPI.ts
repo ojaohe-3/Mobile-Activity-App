@@ -21,7 +21,7 @@ profileAPI.get("/:id", (req : Request, res : Response) => {
     }
 });
 
-//todo remove, this is only for debuging
+//TODO remove, this is only for debuging
 profileAPI.get("/", (req : Request, res : Response) => {
     res.json(handler.activeUsers.values());
 });

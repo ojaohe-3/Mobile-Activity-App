@@ -35,14 +35,14 @@ export class WebSocketHandler{
     this._clients = new Map<string, WebSocket>();
     this._wss = new WebSocket.Server({ server })
     this._eventHandler = new EventHandler()
-    //todo heartbeat
+    //TODO heartbeat
     this._wss.on("connection", (ws : WebSocket, req) => {
       console.log(new Date().toISOString(), "connection established")
       this._eventHandler.run("connected")
-      ws.on("message", (data) => {
+      ws.on("message", async (data) => {
         console.log(new Date().toISOString(), data)
         this._eventHandler.run("message")
-        this.handelIncoming(data as string, req, ws);
+        await this.handelIncoming(data as string, req, ws);
       })
     
       ws.on("close", () => {
@@ -62,12 +62,12 @@ export class WebSocketHandler{
   
 
 
-  private handelIncoming(data: string, req: IncomingMessage, ws: WebSocket) : void{
+  private async handelIncoming(data: string, req: IncomingMessage, ws: WebSocket) : Promise<void>{
     try {
       const parsed = JSON.parse(data) as IReciveFormat;
       const user = createProfile(parsed.user)
-      UserSessions.Instance.addUser(user); //todo user heartbeat update
-      const session = SessionController.Instance.getSession(parsed.id);
+      UserSessions.Instance.addUser(user); //TODO user heartbeat update
+      const session = await SessionController.Instance.getSession(parsed.id);
       
       this._clients.set(parsed.id, ws);
       
@@ -87,7 +87,7 @@ export class WebSocketHandler{
             this._clients.forEach(ws => ws.send(send));
             
           })
-          // todo inform clients that this user is currently active    
+          // TODO inform clients that this user is currently active    
           break;
           case SessionTypes.UpdateSession:
               assert(parsed.data)
@@ -99,10 +99,12 @@ export class WebSocketHandler{
             assert(parsed.session)
             SessionController.Instance.setSession(createSession(parsed.session!))
             break;
+          case SessionTypes.LeaveSession:
+            SessionController.Instance.removeUser(parsed.id, parsed.user.id)
         }
       }catch (error) {
       console.log(error)
-      // todo : error handeling
+      // TODO : error handeling
 
     }
   }

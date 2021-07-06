@@ -5,7 +5,6 @@ import Profile, { IProfile } from "./Profile"
 
 export interface ISession {
     readonly org : Organization
-    readonly profiles : Array<Profile>
     readonly id: string
     readonly name : string
     readonly start : GeoCoordinates
@@ -14,6 +13,7 @@ export interface ISession {
     readonly bounds : GeoCoordinatesBound
     current: GeoCoordinates
     totalSteps: number
+    readonly distance: string
 }
 export interface SessionUpdate{
     nStep: number,
@@ -24,7 +24,6 @@ export function createSession(
     session: ISession): GameSession{
         return new GameSession(
             session.org, 
-            session.profiles, 
             session.id, 
             session.name,
             session.start, 
@@ -32,13 +31,13 @@ export function createSession(
             session.path, 
             session.bounds, 
             session.current, 
-            session.totalSteps
+            session.totalSteps,
+            session.distance
         );
     }
 
 export default class GameSession implements ISession{
     org : Organization
-    profiles : Array<Profile>
     id: string
     name : string
     start : GeoCoordinates
@@ -47,12 +46,12 @@ export default class GameSession implements ISession{
     bounds : GeoCoordinatesBound
     current: GeoCoordinates
     totalSteps: number
+    distance: string
     private _eventHandler : EventHandler
 
 
   constructor(
     _org: Organization, 
-    _profiles: Array<Profile>, 
     _id: string, 
     _name: string, 
     _start: GeoCoordinates, 
@@ -61,10 +60,10 @@ export default class GameSession implements ISession{
     _bounds: GeoCoordinatesBound, 
     _current: GeoCoordinates, 
     _totalSteps: number,
+    _distance: string
     
 ) {
     this.org = _org
-    this.profiles = _profiles
     this.id = _id
     this.name = _name
     this.start = _start
@@ -73,25 +72,15 @@ export default class GameSession implements ISession{
     this.bounds = _bounds
     this.current = _current
     this.totalSteps = _totalSteps
+    this.distance = _distance
     this._eventHandler = new EventHandler()
-  }
+    }
 
   public updateEvent(handler : (arg0 : SessionUpdate) => void) : void{
         this._eventHandler.expose().on("update", handler)
   }
 
-  public addprofile(profile: Profile) : void {
-    this.profiles.push(profile)
-  }
-
-  public removeProfile(profile: Profile) : void {
-      let index = -1
-      const filt = this.profiles.filter((p,i) => {p.id === profile.id; index = i;})
-      if(index >= 0)
-        this.profiles.splice(index, 1)
-  }
-  //todo maybe we want to calculate the new geo point by steps in this api....
-  //fixme any ambiguity with session update, only update sends a delta, and new position, or we recive the new totalstep as well.
+  //TODO maybe we want to calculate the new geo point by steps in this api....
   public update(delta_steps: number, npos: GeoCoordinates){
       this.totalSteps += delta_steps;
       this.current = npos;

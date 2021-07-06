@@ -18,7 +18,7 @@ export class EventHandler implements IEvent {
     if (this.handlers.has(key)) {
       this.handlers.get(key)!.push(handler);
     } else {
-      this.handlers.set(key, [handler]);
+      this.handlers.set(key, [handler]); 
     }
   }
 

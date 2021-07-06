@@ -23,13 +23,13 @@ organizationAPI.get("/:id", (req : Request, res : Response) => {
 });
 
 organizationAPI.get("/", (req : Request, res : Response) => {
-    //todo attribute security
+    //TODO attribute security
     res.json(handler.orgs.values())    
 });
 
 organizationAPI.post("/", (req : Request, res : Response) => {
     try {
-        //todo authentication and basic security checks
+        //TODO authentication and basic security checks
         const data = req.body as IOrg
         handler.addOrg(createOrganization(data))
         const response : IResponse = {
@@ -52,7 +52,7 @@ organizationAPI.post("/", (req : Request, res : Response) => {
 organizationAPI.put("/", (req : Request, res : Response) => {
     // note: this might not survive final implemntation
     try {
-        //todo authentication and basic security checks
+        //TODO authentication and basic security checks
         const data = req.body as IOrg
         handler.updateOrg(data.id, data);
         const response : IResponse = {
@@ -71,12 +71,13 @@ organizationAPI.put("/", (req : Request, res : Response) => {
     }   
 });
 
-organizationAPI.post("/:id/addUser", (req : Request, res : Response) => {
+organizationAPI.post("/:id/addUser", async (req : Request, res : Response) => {
     try {
-        //todo authentication and basic security checks, also owner settings so that others can add.
+        //TODO authentication and basic security checks, also owner settings so that others can add.
         const id = req.params.id
         const data = req.body as IProfile
-        handler.getOrg(id).members.push(createProfile(data))
+        const org = await handler.getOrg(id)
+        org.members.push(createProfile(data))
         const response : IResponse = {
             message: 'Success, user added to organization!',
             data: data,
@@ -94,12 +95,13 @@ organizationAPI.post("/:id/addUser", (req : Request, res : Response) => {
         
 });
 
-organizationAPI.get("/:id/removeUser/:uid", (req : Request, res : Response) => {
+organizationAPI.get("/:id/removeUser/:uid", async (req : Request, res : Response) => {
     try {
-        //todo authentication and basic security checks, also owner settings so that others can add.
+        //TODO authentication and basic security checks, also owner settings so that others can add.
         const id = req.params.id
         const uid = req.params.uid
-        handler.getOrg(id).remove(uid)
+        const org = await handler.getOrg(id)
+        org.remove(uid)
         const response : IResponse = {
             message: 'Success, user removed from organization',
             status: 200,

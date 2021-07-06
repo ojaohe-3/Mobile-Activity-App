@@ -1,16 +1,17 @@
 import assert from "assert";
-import Profile from "../objects/Profile";
+import Profile, { createProfile, IProfile } from "../objects/Profile";
 import DBProfile from "./DB/DBProfile";
 
 export default class UserSessions {
-  //todo add to database
-  //todo add timeout of users
+  //TODO add to database
+  //TODO add timeout of users
   private static instance?: UserSessions;
   private _activeUsers: Map<string, Profile>;
   private _allUsers: Array<string>;
   public constructor() {
     this._activeUsers = new Map<string, Profile>();
-    this._allUsers = DBProfile.instance.getIndexes();
+    this._allUsers = new Array<string>();
+    this.fetchIndexes();
   }
 
   public static get Instance(): UserSessions {
@@ -20,17 +21,26 @@ export default class UserSessions {
     return this.instance;
   }
 
-  public getUser(id: string): Profile {
+  private async fetchIndexes() {
+    this._allUsers = await DBProfile.instance.getIndexes();
+  }
+
+  private async unloaded(id: string): Promise<IProfile | null> {
+    await this.fetchIndexes();
+    let unloaded = this._allUsers.filter((e) => e === id);
+    if (unloaded.length === 1) return await DBProfile.instance.getById(id);
+    else return null;
+  }
+
+  public async getUser(id: string): Promise<Profile> {
     if (this._activeUsers.has(id)) {
       return this._activeUsers.get(id)!;
     } else {
-      // user object is not active, and it exist in the database,
-      // todo remove assert, make a syncronization call to the database if we dont find it.
-      const db = this._allUsers.filter((i) => i === id);
-      assert(db.length === 1);
-      const profile = DBProfile.instance.getById(db[0])
-      this._activeUsers.set(id, profile)
-      return profile;
+      const unloaded = await this.unloaded(id);
+      assert(unloaded)
+      const data = createProfile(unloaded);
+      this._activeUsers.set(id, data);
+      return data;
     }
   }
 
