@@ -48,13 +48,17 @@ class _StateSetupState extends State<StateSetup> {
   }
   @override
   Future<void> initState() async {
-    this._orgs = await createOrgList();
+    this._orgs = await createOrgList(); //todo move to OrgLoad
     super.initState();
   }
 
   Future<List<String>> createOrgList() async{
-    var data = await ApiCalls.getAppAPI(api : APIs.Organization) as List<dynamic>
-    data.
+    var data = await ApiCalls.getAppAPI(api : APIs.Organization) as List<dynamic>;
+    List<String> res = List.empty();
+    for(var item in data){
+      res.add(item['id']);
+    }
+    return res;
   }
 
   @override
@@ -146,7 +150,7 @@ class _StateSetupState extends State<StateSetup> {
                             start: _mapData!.start,
                             end: _mapData!.end,
                             path: _mapData!.polyLine,
-                            id: uuid.v4(),
+                            id: uuid.v4(),//todo utilize the api id
                             title: _titleText.text.toString(),
                             totalSteps: 0,
                             current: _mapData!.start,

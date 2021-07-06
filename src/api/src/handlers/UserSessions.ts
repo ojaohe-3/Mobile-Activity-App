@@ -1,5 +1,5 @@
 import assert from "assert";
-import Profile, { createProfile, IProfile } from "../objects/Profile";
+import Profile, { createProfile, IProfile } from "../models/Profile";
 import DBProfile from "./DB/DBProfile";
 
 export default class UserSessions {

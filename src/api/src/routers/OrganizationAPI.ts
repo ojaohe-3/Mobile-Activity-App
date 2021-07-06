@@ -1,8 +1,8 @@
 import { Router, Request, Response } from "express";
 import OrgHandler from "../handlers/OrgHandler";
 import Organization, { createOrganization, IOrg } from "../objects/Organization";
-import Profile, { createProfile, IProfile } from "../objects/Profile";
-import IResponse from "./IResponse";
+import Profile, { createProfile, IProfile } from "../models/Profile";
+import IResponse from "../models/response.model";
 
 const organizationAPI = Router();
 const handler = OrgHandler.Instance;

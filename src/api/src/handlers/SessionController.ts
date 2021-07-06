@@ -1,9 +1,10 @@
 import assert from "assert";
 import GameSession, { createSession, ISession } from "../objects/GameSession";
-import DBSession from "./DB/DBSession";
-import UserSessions from "./UserSessions";
 
 export default class SessionController {
+  indexes(): any {
+      throw new Error("Method not implemented.");
+  }
 
   //TODO add datamonitors that assosiate statistic to user.
 
@@ -14,7 +15,7 @@ export default class SessionController {
   public constructor() {
     this._sessions = new Map<string, GameSession>();
     this._existingSession = new Array<string>();
-    this.fetchIndexes();
+    // this.fetchIndexes();
   }
 
   public static get Instance(): SessionController {
@@ -24,13 +25,13 @@ export default class SessionController {
   }
 
   private async fetchIndexes() {
-    this._existingSession = await DBSession.instance.getIndexes();
+    // this._existingSession = await DBSession.instance.getIndexes();
   }
 
   private async unloaded(id: string): Promise<ISession | null> {
     await this.fetchIndexes();
     let unloaded = this._existingSession.filter((e) => e === id);
-    if (unloaded.length === 1) return await DBSession.instance.getById(id);
+    if (unloaded.length === 1) return await .instance.getById(id);
     else return null;
   }
 
