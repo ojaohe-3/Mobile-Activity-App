@@ -2,8 +2,8 @@ import assert from "assert";
 import Organization, {
   createOrganization,
   IOrg,
-} from "../objects/Organization";
-import DBOrg from "./DB/DBOrg";
+} from "../models/Organization";
+import { MongoDBConnector, MongoModels } from "./DB/MongoDBConnector";
 
 export default class OrgHandler {
   private static instance?: OrgHandler;
@@ -24,7 +24,10 @@ export default class OrgHandler {
   }
 
   private async fetchIndexes() {
-    this._allorgs = await DBOrg.instance.getIndexes();
+    const raw = await MongoDBConnector.instance.findAll(MongoModels.ORG)
+    console.log(raw)
+    if(raw)
+      raw.forEach((e: any) => this._allorgs.push(e.id));
     console.log(this._allorgs)
     
   }
@@ -32,7 +35,7 @@ export default class OrgHandler {
   private async unloaded(id: string): Promise<IOrg | null> {
     await this.fetchIndexes();
     const unloaded = this._allorgs.filter((e) => e === id);
-    if (unloaded.length === 1) return await DBOrg.instance.getById(unloaded[0]);
+    if (unloaded.length === 1) return await MongoDBConnector.instance.findOne(unloaded[0], MongoModels.ORG);
     else return null;
   }
 
@@ -48,11 +51,17 @@ export default class OrgHandler {
   }
 
   public async addOrg(org: Organization): Promise<void> {
+
     const unloaded = await this.unloaded(org.id);
+    const body = {
+      _id : org.id,
+      name: org.name,
+      members: org.members
+    }
     if (!unloaded) {
-      await DBOrg.instance.addItem(org);
+      await MongoDBConnector.instance.insert(body, MongoModels.ORG);
       this._allorgs.push(org.id);
-    } else await DBOrg.instance.updateItem(org);
+    } else await MongoDBConnector.instance.update(org.id, body, MongoModels.ORG);
 
     this._orgs.set(org.id, org);
   }

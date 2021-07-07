@@ -1,6 +1,6 @@
 import { Router, Request, Response } from "express";
 import OrgHandler from "../handlers/OrgHandler";
-import Organization, { createOrganization, IOrg } from "../objects/Organization";
+import Organization, { createOrganization, IOrg } from "../models/Organization";
 import Profile, { createProfile, IProfile } from "../models/Profile";
 import IResponse from "../models/response.model";
 
@@ -71,29 +71,7 @@ organizationAPI.put("/", (req : Request, res : Response) => {
     }   
 });
 
-organizationAPI.post("/:id/addUser", async (req : Request, res : Response) => {
-    try {
-        //TODO authentication and basic security checks, also owner settings so that others can add.
-        const id = req.params.id
-        const data = req.body as IProfile
-        const org = await handler.getOrg(id)
-        org.members.push(createProfile(data))
-        const response : IResponse = {
-            message: 'Success, user added to organization!',
-            data: data,
-            status: 200,
-        } 
-        res.json(response)    
-    } catch (error) {
-        const response : IResponse = {
-            message: "could not process data object!",
-            error: error,
-            status: 500,
-        }
-        res.status(500).json(response)    
-    }
-        
-});
+
 
 organizationAPI.get("/:id/removeUser/:uid", async (req : Request, res : Response) => {
     try {

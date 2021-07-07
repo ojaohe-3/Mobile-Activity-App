@@ -8,11 +8,29 @@ enum Endpoints{
   Create, List_Available, Enter_Session,
 }
 
-class Sockets extends Subject{}
+class WebSocketsController
+    extends Subject{
+
+}
 enum APIs{
-  Session, Organization, Profile
+  Session, Organization, Profile, SessionMembers
 }
 class ApiCalls {
+  static String APIsToString(APIs api){
+    switch(api){
+      case APIs.Session:
+        return "session/";
+      case APIs.Organization:
+        return "organization/";
+      case APIs.Profile:
+        return "profile/";
+      case APIs.SessionMembers:
+        return "session/members/";
+      default:
+        return "";
+    }
+  }
+
   static Future<dynamic>? getDirectionApi(LatLng start, LatLng end) async {
     //todo add path
     await dotenv.load(fileName: 'lib/.env');
@@ -66,7 +84,10 @@ class ApiCalls {
       throw Exception(
           "API endpoint is missing in the .env file! please add in .env ");
     }
-    url = url + api.toString();
+
+
+
+    url = url + APIsToString(api);
     if(id != null) url = url + id;
 
     try{

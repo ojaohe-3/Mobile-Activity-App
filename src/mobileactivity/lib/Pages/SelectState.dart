@@ -13,7 +13,11 @@ class SelectState extends StatefulWidget {
 
 class _SelectStateState extends State<SelectState> {
   List<dynamic> _sessions = List.empty();
-
+  @override
+  Future<void> initState() async {
+    _sessions = await ApiCalls.getAppAPI(api: APIs.Session);
+    super.initState();
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(

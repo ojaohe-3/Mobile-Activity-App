@@ -1,16 +1,18 @@
 import { DBConnector } from "./DBConnector";
-import { connection, connect, Connection, ObjectId } from "mongoose";
-import profile, { IProfile, ProfileModel } from "../../models/profile.model";
-import org, { IOrg, OrgModel } from "../../models/org.model";
-import session, { ISession, SessionModel } from "../../models/session.model";
+import mongoose, { connection, connect, Connection, ObjectId } from "mongoose";
+import profile, { IProfileDocument, ProfileModel } from "./profile.model";
+import org, { IOrgDocument, OrgModel } from "./org.model";
+import session, { ISessionDocument, SessionModel } from "./session.model";
 
+const dotenv = require("dotenv");
+dotenv.config();
 export declare interface IModels {
   Profile: ProfileModel;
   Session: SessionModel;
   Org: OrgModel;
 }
 
-export type MongoDocument = IProfile | ISession | IOrg;
+export type MongoDocument = IProfileDocument | ISessionDocument | IOrgDocument;
 
 export class MongoDBConnector extends DBConnector {
   private _db: Connection;
@@ -29,11 +31,11 @@ export class MongoDBConnector extends DBConnector {
 
   constructor() {
     super();
-    connect(process.env.MONGO_URI ?? "mongodb://localhost:27017", {
+    mongoose.connect(process.env.MONGO_URI ?? "mongodb://localhost:27017", {
       useNewUrlParser: true,
       useUnifiedTopology: true,
     });
-    this._db = connection;
+    this._db = mongoose.connection;
     this._db.on("open", this.connected);
     this._db.on("error", this.error);
     this._models = {
@@ -62,37 +64,38 @@ export class MongoDBConnector extends DBConnector {
     }
   }
 
-  public async findOne(id: ObjectId, model: MongoModels): Promise<any | null> {
+  public async findOne(id: string, model: MongoModels): Promise<any | null> {
+    const _id = mongoose.Types.ObjectId(id);
     switch (model) {
       case MongoModels.ORG:
-        return await this._models.Org.findById(id);
+        return await this._models.Org.findById(_id);
       case MongoModels.PROFILE:
-        return await this._models.Profile.findById(id);
+        return await this._models.Profile.findById(_id);
       case MongoModels.SESSION:
-        return await this._models.Session.findById(id);
+        return await this._models.Session.findById(_id);
     }
   }
 
   public async findAll(model: MongoModels): Promise<any | null> {
     switch (model) {
       case MongoModels.ORG:
-        return await this._models.Org.findAll(query);
+        return await this._models.Org.find();
       case MongoModels.PROFILE:
-        return await this._models.Profile.findAll(query);
+        return await this._models.Profile.find();
       case MongoModels.SESSION:
-        return await this._models.Session.findAll(query);
+        return await this._models.Session.find();
     }
   }
 
   public async insert(
-    document: MongoDocument,
+    document: Partial<MongoDocument>,
     model: MongoModels
   ): Promise<any | null> {
     let obj: MongoDocument;
     switch (model) {
       case MongoModels.ORG:
         obj = await this._models.Org.create(document);
-        if ((await obj.exists()).length != 0) {
+        if ((await obj.exists).length != 0) {
           throw new Error("Org already exists!!");
         }
         await obj.save();
@@ -138,11 +141,11 @@ export class MongoDBConnector extends DBConnector {
   public async delete(id: string, model: MongoModels): Promise<any | null> {
     switch (model) {
       case MongoModels.ORG:
-        return await this._models.Org.findOneAndRemove(id);
+        return await this._models.Org.findOneAndRemove({_id : id});
       case MongoModels.PROFILE:
-        return await this._models.Profile.findOneAndRemove(id);
+        return await this._models.Profile.findOneAndRemove({_id : id});
       case MongoModels.SESSION:
-        return await this._models.Session.findOneAndRemove(id);
+        return await this._models.Session.findOneAndRemove({_id : id});
     }
   }
 }

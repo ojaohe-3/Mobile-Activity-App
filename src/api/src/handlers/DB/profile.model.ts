@@ -1,6 +1,6 @@
 import { Document, model, Model, Schema } from "mongoose";
 
-interface IProfile extends Document {
+interface IProfileDocument extends Document {
   exists(): any;
   name: string;
   oid: string;
@@ -29,8 +29,8 @@ profileScheme.method("exist", async function () {
   });
 });
 
-export interface ProfileModel extends Model<IProfile> {
+export interface ProfileModel extends Model<IProfileDocument> {
   query(query: Object): any;
 }
-export { IProfile, profileScheme };
-export default model<IProfile>("Profile", profileScheme);
+export { IProfileDocument as IProfileDocument, profileScheme };
+export default model<IProfileDocument>("Profile", profileScheme) as ProfileModel;

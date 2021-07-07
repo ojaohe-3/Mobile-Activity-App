@@ -1,6 +1,6 @@
 import { Document, Schema, model, Model } from "mongoose";
 
-interface IOrg extends Document {
+interface IOrgDocument extends Document {
   exists(): any;
   name: string;
   members?: string[];
@@ -29,8 +29,8 @@ orgScheme.method("exist", async function () {
   });
 });
 
-export interface OrgModel extends Model<IOrg> {
+export interface OrgModel extends Model<IOrgDocument> {
   query(query: Object): any;
 }
-export { IOrg, orgScheme };
-export default model<IOrg>("Org", orgScheme);
+export { IOrgDocument as IOrgDocument, orgScheme };
+export default model<IOrgDocument>("Org", orgScheme) as OrgModel;

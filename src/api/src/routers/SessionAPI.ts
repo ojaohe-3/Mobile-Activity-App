@@ -1,6 +1,6 @@
 import { Router, Request, Response } from "express";
 import SessionController from "../handlers/SessionController";
-import { createSession, ISession } from "../objects/GameSession";
+import { createSession, ISession } from "../models/GameSession";
 import IResponse from "../models/response.model";
 //TODO authentication
 const sessionAPI = Router();
@@ -20,11 +20,11 @@ sessionAPI.get("/:id", async (req : Request, res : Response) => {
         res.status(404).json(response)
     }
 });
-sessionAPI.get("/:id/members", async (req : Request, res : Response) => {
+sessionAPI.get("/members/:id/", async (req : Request, res : Response) => {
     try {
         const id = req.params.id;
         const item = await handler.getSession(id);
-        res.json(item);
+        res.json(item.members);
     } catch (error) {
         const response : IResponse = {
             message : 'Could not find member',
@@ -35,13 +35,9 @@ sessionAPI.get("/:id/members", async (req : Request, res : Response) => {
     }
 });
 
-sessionAPI.get("/active", (req : Request, res : Response) => {
-    //TODO attribute security, only list for members
-    res.json(handler.items().values);
-});
 sessionAPI.get("/", (req : Request, res : Response) => {
     //TODO attribute security, only list for members
-    res.json(handler.indexes());
+    res.json(handler.items().values);
 });
 
 sessionAPI.post("/", (req : Request, res : Response) => {

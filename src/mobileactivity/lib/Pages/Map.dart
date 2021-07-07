@@ -3,7 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:mobileactivity/DataClasses/EventObserverPattern.dart';
 import 'package:mobileactivity/DataClasses/PlayState.dart';
+import 'package:mobileactivity/DataClasses/Profile.dart';
 import 'package:mobileactivity/modules/bluetooth.module.dart';
+import 'package:mobileactivity/modules/networking.monule.dart';
 import 'package:mobileactivity/widgets/Header.dart';
 
 class GMap extends StatefulWidget {
@@ -21,11 +23,14 @@ class _GMapState extends State<GMap> implements Observer {
   Marker? _start;
   Marker? _end;
   Marker? _current;
+
+  List<Profile> profiles = List.empty();
   @override
   void initState() {
     //todo ask premission from the user if we need to setup device, then if
     // BluetoothModule.instance.init();
     // BluetoothModule.instance.add(this);
+
     super.initState();
   }
 
@@ -34,12 +39,14 @@ class _GMapState extends State<GMap> implements Observer {
     this._googleMapController.dispose();
     super.dispose();
   }
-
+  Future<void> setProfiles(String id) async {
+    this.profiles = await ApiCalls.getAppAPI(api: APIs.SessionMembers, id: id);
+  }
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context)  {
     _state = ModalRoute.of(context)!.settings.arguments as PlayState;
-
-    _initPos = CameraPosition(target: _state.current, zoom: 12);
+    setProfiles(_state.id);
+    _initPos = CameraPosition(target: _state.current, zoom: 12); //todo set zoom translation
     _initBound = CameraTargetBounds(_state.bounds);
     _start = Marker(markerId: MarkerId('start'), position: _state.start);
     _end = Marker(markerId: MarkerId('end'), position: _state.end);
@@ -71,6 +78,13 @@ class _GMapState extends State<GMap> implements Observer {
                 width: 5,
               )
             },
+          ),
+          SizedBox(
+            height: 100,
+            width: 200,
+            child: ListView(
+              
+            ),
           )
         ]));
   }

@@ -17,7 +17,7 @@ const app : Application = express();
 const options: cors.CorsOptions = {
   allowedHeaders: [
     'Origin',
-    'X-Requested-With',
+    'X-Requested-With', 
     'Content-Type',
     'Accept',
     'X-Access-Token',

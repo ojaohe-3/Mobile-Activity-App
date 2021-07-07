@@ -10,7 +10,7 @@ abstract class Observer{
 class Subject{
   List<Observer>? observers;
 
-  Monitor(){
+  Subject(){
     observers = List.empty();
   }
   void add(Observer obs){

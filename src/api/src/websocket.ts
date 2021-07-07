@@ -4,7 +4,7 @@ import * as WebSocket from "ws"
 import { EventHandler, IEvent } from "./handlers/EventHandler"
 import SessionController from "./handlers/SessionController"
 import UserSessions from "./handlers/UserSessions"
-import { createSession, ISession, SessionUpdate } from "./objects/GameSession"
+import { createSession, ISession, SessionUpdate } from "./models/GameSession"
 import { createProfile, IProfile } from "./models/Profile"
 
 interface IReciveFormat{
@@ -98,8 +98,8 @@ export class WebSocketHandler{
             assert(parsed.session)
             SessionController.Instance.setSession(createSession(parsed.session!))
             break;
-          case SessionTypes.LeaveSession:
-            SessionController.Instance.removeUser(parsed.id, parsed.user.id)
+          // case SessionTypes.LeaveSession:
+          //   SessionController.Instance.removeUser(parsed.id, parsed.user.id)
         }
       }catch (error) {
       console.log(error)

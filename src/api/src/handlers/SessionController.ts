@@ -1,10 +1,9 @@
 import assert from "assert";
-import GameSession, { createSession, ISession } from "../objects/GameSession";
+import GameSession, { createSession, ISession } from "../models/GameSession";
+import { MongoDBConnector, MongoModels } from "./DB/MongoDBConnector";
 
 export default class SessionController {
-  indexes(): any {
-      throw new Error("Method not implemented.");
-  }
+
 
   //TODO add datamonitors that assosiate statistic to user.
 
@@ -25,26 +24,33 @@ export default class SessionController {
   }
 
   private async fetchIndexes() {
-    // this._existingSession = await DBSession.instance.getIndexes();
+    
+    const raw = await MongoDBConnector.instance.findAll(MongoModels.SESSION) as Array<ISession>;
+    raw.forEach((e: { id: string; }) => {
+      this._existingSession.push(e.id);
+    });
   }
 
   private async unloaded(id: string): Promise<ISession | null> {
     await this.fetchIndexes();
     let unloaded = this._existingSession.filter((e) => e === id);
-    if (unloaded.length === 1) return await .instance.getById(id);
+    if (unloaded.length === 1) return await MongoDBConnector.instance.findOne(id, MongoModels.SESSION);
     else return null;
   }
 
   public async setSession(session: GameSession) {
     const unloaded = await this.unloaded(session.id);
     if (!unloaded) {
-      await DBSession.instance.addItem(session);
+      await MongoDBConnector.Models.Session.find();
       this._existingSession.push(session.id);
     }else
-        await DBSession.instance.updateItem(session);
+        await MongoDBConnector.instance.update(session.id, session as ISession, MongoModels.SESSION);
+    
 
     this._sessions.set(session.id, session);
   }
+
+
 
   public async getSession(id: string): Promise<GameSession> {
     if (this._sessions.has(id)) return this._sessions.get(id)!;
@@ -69,10 +75,12 @@ export default class SessionController {
     assert(old);
     old.update!(session.totalSteps, session.current);
   }
-
-  public async removeUser(sid: string, uid: string) {
-    const session = await this.getSession(sid)
-    session.removeProfile(uid);
-    await DBSession.instance
+  public get indexes() : string[]{
+    return this._existingSession;
   }
+
+  // public removeUser(sid: string, uid: string) {
+  //   const session = await this.getSession(sid)
+   
+  // }
 }

@@ -1,7 +1,7 @@
 import { Document, Schema, model, Model } from "mongoose";
 import { GeoCoordinates, GeoCoordinatesBound } from "./geoCoordinates.model";
 
-interface ISession extends Document {
+interface ISessionDocument extends Document {
   exists(): any;
   orgId: string;
   name: string;
@@ -50,8 +50,9 @@ sessionScheme.method("exist", async function () {
   });
 });
 
-export interface SessionModel extends Model<ISession> {
+export interface SessionModel extends Model<ISessionDocument> {
   query(query: Object): any;
 }
-export { ISession, sessionScheme };
-export default model<ISession>("Session", sessionScheme);
+export { ISessionDocument as ISessionDocument, sessionScheme };
+export default model<ISessionDocument>("Session", sessionScheme) as SessionModel;
+
