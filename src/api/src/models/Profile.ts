@@ -1,3 +1,5 @@
+import { profile } from "console"
+
 export interface IProfile{
     readonly name: string
     readonly id: string
@@ -24,4 +26,10 @@ export default class Profile implements IProfile{
         this.oid = _oid
     }
 
+    public update(profile : Partial<IProfile>){
+        if(profile.name)
+            this.name = profile.name;
+        if(profile.oid)
+            this.oid = profile.oid;
+    }
 }

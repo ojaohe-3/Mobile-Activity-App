@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -20,6 +22,9 @@ class _GMapState extends State<GMap> implements Observer {
   late CameraTargetBounds _initBound;
   late GoogleMapController _googleMapController;
 
+  webListener? _socketObserver;
+  Observer? _bluetoothObserver;
+
   Marker? _start;
   Marker? _end;
   Marker? _current;
@@ -30,8 +35,19 @@ class _GMapState extends State<GMap> implements Observer {
     //todo ask premission from the user if we need to setup device, then if
     // BluetoothModule.instance.init();
     // BluetoothModule.instance.add(this);
-
+    _socketObserver = webListener(onSocketEvent);
+    WebSocketsController.instance.add(_socketObserver!);
+    //todo at bluetooth event,
     super.initState();
+  }
+
+  void onSocketEvent(){
+    var message = _socketObserver!.reciveQueue.last;
+    _socketObserver!.reciveQueue.removeLast();
+    var raw = json.decode(message);
+    _state.totalSteps = raw['data']['steps'];
+    _state.current = raw['data']['nPos'];
+    //todo report user added
   }
 
   @override
@@ -39,14 +55,17 @@ class _GMapState extends State<GMap> implements Observer {
     this._googleMapController.dispose();
     super.dispose();
   }
+
   Future<void> setProfiles(String id) async {
-    this.profiles = await ApiCalls.getAppAPI(api: APIs.SessionMembers, id: id);
+    this.profiles = await ApiCalls.getAppAPI(endpoint: 'session/$id/members/');
   }
+
   @override
-  Widget build(BuildContext context)  {
+  Widget build(BuildContext context) {
     _state = ModalRoute.of(context)!.settings.arguments as PlayState;
     setProfiles(_state.id);
-    _initPos = CameraPosition(target: _state.current, zoom: 12); //todo set zoom translation
+    _initPos = CameraPosition(
+        target: _state.current, zoom: 12); //todo set zoom translation
     _initBound = CameraTargetBounds(_state.bounds);
     _start = Marker(markerId: MarkerId('start'), position: _state.start);
     _end = Marker(markerId: MarkerId('end'), position: _state.end);
@@ -82,9 +101,16 @@ class _GMapState extends State<GMap> implements Observer {
           SizedBox(
             height: 100,
             width: 200,
-            child: ListView(
-              
-            ),
+            child: ListView.builder(
+                itemCount: this.profiles.length,
+                itemBuilder: (context, index) {
+                  return Card(
+                      child: ListTile(
+                        leading: CircleAvatar(backgroundColor: Colors.amber),
+                        title: Text(this.profiles[index].name + ": steps here"),
+                      ),
+                      elevation: 0);
+                }),
           )
         ]));
   }
@@ -97,3 +123,19 @@ class _GMapState extends State<GMap> implements Observer {
 //todo display 1, the current position of the sessions progress,
 //todo 2 update progress if event fires through the playstate callback.
 //todo 3 list all members if any, and display there progress. for now also add a placeholder
+
+class webListener extends Observer {
+  List<String> reciveQueue = List.empty();
+  Function callback;
+
+  webListener(this.callback);
+
+  @override
+  void update(args) {
+    if (args != "closed") {
+      reciveQueue.add(args);
+      this.callback();
+    }
+    super.update(args);
+  }
+}

@@ -1,7 +1,9 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:mobileactivity/DataClasses/PlayState.dart';
+import 'package:mobileactivity/DataClasses/org.dart';
 import 'package:mobileactivity/modules/filesystem.module.dart';
 import 'package:mobileactivity/modules/networking.monule.dart';
 import 'package:mobileactivity/modules/utilities.module.dart';
@@ -19,14 +21,13 @@ class _StateSetupState extends State<StateSetup> {
   TextEditingController _titleText = TextEditingController();
   String _visibility = "Private";
   PointSelection? _mapData;
-  List<String> _orgs = List.empty();
-
+  Org? _org;
   var uuid = Uuid();
-  bool publish = false;
-  Org _org = Org(id: "1", name: "Unassigned", members: [], ); //todo add default member as local user.
+  bool publish = false; //todo
 
   Future<dynamic>? createAlert(context) {
-    return showDialog(context: context,
+    return showDialog(
+        context: context,
         builder: (context) => AlertDialog(
               content: Text("Confirm session?"),
               actions: [
@@ -41,21 +42,18 @@ class _StateSetupState extends State<StateSetup> {
               ],
             ));
   }
+
   @override
-  void dispose(){
+  void dispose() {
     this._titleText.dispose();
     super.dispose();
   }
-  @override
-  Future<void> initState() async {
-    this._orgs = await createOrgList(); //todo move to OrgLoad
-    super.initState();
-  }
 
-  Future<List<String>> createOrgList() async{
-    var data = await ApiCalls.getAppAPI(api : APIs.Organization) as List<dynamic>;
+  Future<List<String>> createOrgList() async {
+    var data =
+        await ApiCalls.getAppAPI(endpoint: 'organizations/') as List<dynamic>;
     List<String> res = List.empty();
-    for(var item in data){
+    for (var item in data) {
       res.add(item['id']);
     }
     return res;
@@ -63,7 +61,7 @@ class _StateSetupState extends State<StateSetup> {
 
   @override
   Widget build(BuildContext context) {
-        return Scaffold(
+    return Scaffold(
       appBar: AppBar(
         title: Header(),
         iconTheme: IconThemeData(color: Colors.blue[900]),
@@ -105,20 +103,26 @@ class _StateSetupState extends State<StateSetup> {
               onChanged: (String? newValue) {
                 setState(() async {
                   _visibility = newValue!;
-                  switch(_visibility){
+                  switch (_visibility) {
                     case 'Private':
                       this.publish = false;
+                      this._org = Org(name: "unassinged", id: "", members: []);
                       break;
                     case 'Public':
                       this.publish = true;
-                      this._org = await ApiCalls.getAppAPI(api: APIs.Organization, id: '1001') as Org;
+                      this._org = Org(name: "unassinged", id: "", members: []);
                       break;
-                    default:
-                      this._org = await ApiCalls.getAppAPI(api:  APIs.Organization, id : newValue); //todo this is jucky fix
+                    case 'Select':
+                      this._org = await Navigator.of(context)
+                          .pushNamed('/select/org') as Org;
+                      this.publish = true;
                   }
+                  setState(() {
+
+                  });
                 });
               },
-              items: <String>['Private', 'Public', ...this._orgs]
+              items: <String>['Private', 'Public', 'Select']
                   .map<DropdownMenuItem<String>>((String e) {
                 return DropdownMenuItem<String>(value: e, child: Text(e));
               }).toList(),
@@ -131,9 +135,7 @@ class _StateSetupState extends State<StateSetup> {
               onPressed: () async {
                 _mapData = await Navigator.pushNamed(context, '/setup/map')
                     as PointSelection;
-                setState(() {
-                  _mapData;
-                });
+                setState(() {});
               },
               child: Padding(
                 padding:
@@ -144,25 +146,27 @@ class _StateSetupState extends State<StateSetup> {
                 ),
               )),
           ElevatedButton(
-              onPressed: (this._mapData != null)
+              onPressed: (this._mapData != null && this._org != null)
                   ? () async {
-                        var state = PlayState(
-                            start: _mapData!.start,
-                            end: _mapData!.end,
-                            path: _mapData!.polyLine,
-                            id: uuid.v4(),//todo utilize the api id
-                            title: _titleText.text.toString(),
-                            totalSteps: 0,
-                            current: _mapData!.start,
-                            bounds: Util.generateBounds(
-                                _mapData!.start, _mapData!.end, 0.2),
-                            distance: _mapData!.distance,
-                            org: _org);
-                        FileModule.writeDataToFile("local_state_last.json", state);
-                        FileModule.appendDataToFile("local_state.json", state);
-                        ApiCalls.postAppAPI(APIs.Session, state); //todo translate this into a format that the api can use
-                        Navigator.of(context).pop(state);
-                      }
+                      var state = PlayState(
+                          start: _mapData!.start,
+                          end: _mapData!.end,
+                          path: _mapData!.polyLine,
+                          id: uuid.v4(), //todo utilize the api id
+                          title: _titleText.text.toString(),
+                          totalSteps: 0,
+                          current: _mapData!.start,
+                          bounds: Util.generateBounds(
+                              _mapData!.start, _mapData!.end, 0.2),
+                          distance: _mapData!.distance,
+                          org: _org!);
+                      FileModule.writeDataToFile(
+                          "local_state_last.json", state);
+                      FileModule.appendDataToFile("local_state.json", state);
+                      ApiCalls.postAppAPI('session/',
+                          state); //todo translate this into a format that the api can use
+                      Navigator.of(context).pop(state);
+                    }
                   : null,
               child: Padding(
                 padding:

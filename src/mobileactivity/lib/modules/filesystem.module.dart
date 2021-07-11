@@ -15,6 +15,12 @@ class FileModule{
 
   }
 
+  static Future<bool> fileExist(String fn) async {
+    Directory appDir = await getApplicationDocumentsDirectory();
+    var dir = appDir.path;
+    File file = File('$dir/$fn');
+    return await file.exists();
+  }
 
   static void appendDataToFile(String fn, dynamic data) async{
     Directory appDir = await getApplicationDocumentsDirectory();

@@ -82,7 +82,6 @@ export class WebSocketHandler{
               data:  update,
               user: user
             }
-            console.log("context keeped?")
             this._clients.forEach(ws => ws.send(send));
             
           })

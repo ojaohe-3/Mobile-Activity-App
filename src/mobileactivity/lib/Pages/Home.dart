@@ -1,6 +1,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:mobileactivity/DataClasses/PlayState.dart';
+import 'package:mobileactivity/DataClasses/Profile.dart';
 import 'package:mobileactivity/modules/filesystem.module.dart';
 import 'package:mobileactivity/widgets/Header.dart';
 
@@ -12,6 +13,12 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
+  @override
+  void initState() {
+    Profile.createInstance();
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -32,8 +39,9 @@ class _HomeState extends State<Home> {
               TextButton(
                 onPressed: () async {
                   var state = await FileModule.loadData("local_state_last.json");
+                  // print(state['path']);
                   if(state != null)
-                    Navigator.pushNamed(context, '/setup/state', arguments: state);
+                    Navigator.pushNamed(context, '/setup/state', arguments: PlayState.fromJson(state));
                 },
                 style: TextButton.styleFrom(
                     textStyle: const TextStyle(fontSize: 20)
@@ -79,7 +87,9 @@ class _HomeState extends State<Home> {
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
               TextButton(
-                onPressed: (){},
+                onPressed: (){
+                  Navigator.pushNamed(context, "/profile");
+                },
                 style: TextButton.styleFrom(
                     textStyle: const TextStyle(fontSize: 20)
                 ),

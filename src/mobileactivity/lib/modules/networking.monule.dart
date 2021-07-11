@@ -1,36 +1,57 @@
 //todo add socket and querring
+import 'dart:async';
+
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:dio/dio.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:mobileactivity/DataClasses/EventObserverPattern.dart';
+import 'package:web_socket_channel/web_socket_channel.dart';
 
-enum Endpoints{
-  Create, List_Available, Enter_Session,
+enum Endpoints {
+  Create,
+  List_Available,
+  Enter_Session,
 }
 
-class WebSocketsController
-    extends Subject{
+class WebSocketsController extends Subject {
+  static WebSocketsController instance = new WebSocketsController();
+  var reconnectScheduled = false;
+  bool connected = false;
+  late WebSocketChannel channel;
 
-}
-enum APIs{
-  Session, Organization, Profile, SessionMembers
-}
-class ApiCalls {
-  static String APIsToString(APIs api){
-    switch(api){
-      case APIs.Session:
-        return "session/";
-      case APIs.Organization:
-        return "organization/";
-      case APIs.Profile:
-        return "profile/";
-      case APIs.SessionMembers:
-        return "session/members/";
-      default:
-        return "";
-    }
+
+  Future<void> initWebSocket([int retrySeconds = 2]) async {
+    reconnectScheduled = false;
+
+    await dotenv.load(fileName: 'lib/.env');
+    String? uri = dotenv.env['WS_ENDPOINT'];
+    if (uri == null )throw Exception("could not establish connection!, not a valid url provided in .env WS_ENDPOINT?");
+    channel = WebSocketChannel.connect(Uri.parse(uri));
   }
 
+  void scheduleReconnect([int retrySeconds = 2]) {
+    if (!reconnectScheduled) {
+      new Timer(new Duration(milliseconds: 1000 * retrySeconds),
+              () => initWebSocket(retrySeconds * 2));
+    }
+    reconnectScheduled = true;
+  }
+
+  WebSocketsController(){
+      this.setupSockets();
+    }
+
+    Future<void> setupSockets() async {
+      await initWebSocket();
+      channel.stream.listen((m) => this.run(m));
+    }
+
+    void sendMessage(String message){
+      channel.sink.add(message);
+    }
+}
+
+class ApiCalls {
   static Future<dynamic>? getDirectionApi(LatLng start, LatLng end) async {
     //todo add path
     await dotenv.load(fileName: 'lib/.env');
@@ -52,15 +73,16 @@ class ApiCalls {
         ';' +
         end.longitude.toString() +
         ',' +
-        end.latitude.toString(); //todo add multiple waypoints, and support functions
+        end.latitude
+            .toString(); //todo add multiple waypoints, and support functions
     url = Uri.encodeFull(url);
 
     try {
       final req = await Dio().get(url, queryParameters: {
-        'alternatives' : false,
+        'alternatives': false,
         'geometries': 'polyline',
-        'steps' : false,
-        'access_token' : api
+        'steps': false,
+        'access_token': api
       });
       if (req.statusCode == 200) {
         return req.data;
@@ -68,8 +90,7 @@ class ApiCalls {
         throw Exception(
             'ProfileNotFound, the provided profile was wrong: ${url}');
       } else if (req.statusCode == 422) {
-        throw Exception(
-            'InvalidInput, the provided ${url} was invalid');
+        throw Exception('InvalidInput, the provided ${url} was invalid');
       }
     } catch (e) {
       print(e);
@@ -77,43 +98,46 @@ class ApiCalls {
     }
   }
 
-  static Future<dynamic>? getAppAPI({required APIs api, String? id}) async {
+  static Future<dynamic>? getAppAPI(
+      {required String endpoint, String? id}) async {
     await dotenv.load(fileName: 'lib/.env');
     String? url = dotenv.env['API_ENDPOINT'];
     if (url == null) {
       throw Exception(
           "API endpoint is missing in the .env file! please add in .env ");
     }
-
-
-
-    url = url + APIsToString(api);
-    if(id != null) url = url + id;
-
-    try{
-      final req = await Dio().get(url);
-      if (req.statusCode == 200) return req.data;
-      else throw Exception("Request failed!");
-    }catch(e){
+    url = url + endpoint;
+    if (id != null) url = url + id;
+    print("calling $url");
+    try {
+      final req = await Dio().get(Uri.parse(url).toString());
+      if (req.statusCode == 200) {
+        print('got response: ${req.data}');
+        return req.data;
+      } else
+        throw Exception("Request failed!");
+    } catch (e) {
       print(e);
       return null;
     }
   }
-  
-  static Future<dynamic>? postAppAPI(APIs api, dynamic data) async {
+
+  static Future<dynamic>? postAppAPI(String endpoint, dynamic data) async {
     await dotenv.load(fileName: 'lib/.env');
     String? url = dotenv.env['API_ENDPOINT'];
     if (url == null) {
       throw Exception(
           "API endpoint is missing in the .env file! please add in .env ");
     }
-    url = url + api.toString();
+    url = url + endpoint;
 
-    try{
+    try {
       final req = await Dio().post(url, data: data);
-      if (req.statusCode == 200) return req.data;
-      else throw Exception("Request failed!");
-    }catch(e){
+      if (req.statusCode == 200)
+        return req.data;
+      else
+        throw Exception("Request failed!");
+    } catch (e) {
       print(e);
       return null;
     }

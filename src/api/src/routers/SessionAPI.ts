@@ -38,7 +38,7 @@ sessionAPI.get("/members/:id/", async (req : Request, res : Response) => {
 sessionAPI.get("/", (req : Request, res : Response) => {
     //TODO attribute security, only list for members
     res.json(handler.items().values);
-});
+}); 
 
 sessionAPI.post("/", (req : Request, res : Response) => {
     try {

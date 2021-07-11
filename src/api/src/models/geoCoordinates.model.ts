@@ -6,6 +6,6 @@ export interface GeoCoordinates{
 export interface GeoCoordinatesBound{
     northeast : GeoCoordinates,
     southwest : GeoCoordinates,
-    northwest : GeoCoordinates,
-    southeast : GeoCoordinates,
+    // northwest : GeoCoordinates,
+    // southeast : GeoCoordinates,
 }

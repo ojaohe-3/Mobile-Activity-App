@@ -2,25 +2,25 @@
 
 
 export interface IOrg{
-    readonly id: string
+    readonly _id: string
     readonly name: string
     readonly members: Array<string>
 }
 
 export function createOrganization(org: IOrg) : Organization {
     return new Organization(
-        org.id,
+        org._id,
         org.name, 
         org.members)
 }
 
 export default class Organization implements IOrg {
-    id: string
+    _id: string
     name: string
     members: Array<string> 
 
     constructor(_id: string, _name: string, _members: Array<string>){
-        this.id = _id
+        this._id = _id
         this.name = _name
         this.members = _members
         

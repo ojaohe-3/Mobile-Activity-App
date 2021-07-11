@@ -1,7 +1,7 @@
 import { Document, Schema, model, Model } from "mongoose";
 
 interface IOrgDocument extends Document {
-  exists(): any;
+  exist(): any;
   name: string;
   members?: string[];
 }
@@ -24,7 +24,7 @@ orgScheme.method("toJSON", function () {
 });
 
 orgScheme.method("exist", async function () {
-  return await this.model("Org").find({ id: this.id }, (err) => {
+  return await this.model("org").find({ id: this.id }, (err) => {
     if (err) throw new Error(err.message);
   });
 });
@@ -33,4 +33,4 @@ export interface OrgModel extends Model<IOrgDocument> {
   query(query: Object): any;
 }
 export { IOrgDocument as IOrgDocument, orgScheme };
-export default model<IOrgDocument>("Org", orgScheme) as OrgModel;
+export default model<IOrgDocument>("org", orgScheme) as OrgModel;

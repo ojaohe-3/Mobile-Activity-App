@@ -95,21 +95,21 @@ export class MongoDBConnector extends DBConnector {
     switch (model) {
       case MongoModels.ORG:
         obj = await this._models.Org.create(document);
-        if ((await obj.exists).length != 0) {
+        if ((await obj.exist()).length != 0) {
           throw new Error("Org already exists!!");
         }
         await obj.save();
         break;
       case MongoModels.PROFILE:
         obj = await this._models.Profile.create(document);
-        if ((await obj.exists()).length != 0) {
+        if ((await obj.exist()).length != 0) {
           throw new Error("Org already exists!!");
         }
         await obj.save();
         break;
       case MongoModels.SESSION:
         obj = await this._models.Session.create(document);
-        if ((await obj.exists()).length != 0) {
+        if ((await obj.exist()).length != 0) {
           throw new Error("Org already exists!!");
         }
         await obj.save();
@@ -152,6 +152,6 @@ export class MongoDBConnector extends DBConnector {
 
 export enum MongoModels {
   ORG = "org",
-  PROFILE = "profiles",
+  PROFILE = "profile",
   SESSION = "session",
 }

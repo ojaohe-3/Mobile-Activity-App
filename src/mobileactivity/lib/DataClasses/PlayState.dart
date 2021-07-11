@@ -2,10 +2,9 @@ import 'dart:convert';
 import 'dart:math';
 
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-
+import 'package:mobileactivity/DataClasses/org.dart';
 
 class PlayState {
-
   final LatLng start;
   final LatLng end;
   LatLng current;
@@ -17,18 +16,17 @@ class PlayState {
 
   final String distance;
   final Org org;
-  PlayState({
-    required this.start,
-    required this.end,
-    required this.path,
-    required this.id,
-    required this.title,
-    required this.totalSteps,
-    required this.current,
-    required this.bounds,
-    required this.distance,
-    required this.org
-  });
+  PlayState(
+      {required this.start,
+      required this.end,
+      required this.path,
+      required this.id,
+      required this.title,
+      required this.totalSteps,
+      required this.current,
+      required this.bounds,
+      required this.distance,
+      required this.org});
 
   static Future<PlayState?> generateInstanceFromAPI(String id) async {
     // todo
@@ -45,10 +43,8 @@ class PlayState {
     // if we have an external module it will use the source. otherwise will ignore this method
   }
 
-
   // factory PlayState.fromJson(Map<String, dynamic> json) :
-  Map<String, dynamic> toJson() =>
-      {
+  Map<String, dynamic> toJson() => {
         'id': this.id,
         'title': this.title,
         'start': this.start.toJson(),
@@ -58,23 +54,27 @@ class PlayState {
         'path': this.path.map((e) => e.toJson()).toList(),
         'bounds': this.bounds.toJson(),
         'distance': this.distance,
-        'org' : this.org.toJson()
+        'org': this.org.toJson()
       };
 
-
-  factory PlayState.fromJson(Map<String, dynamic> json) => //todo this might need support function for nested types
-      PlayState(start: json['start'],
-          end: json['end'],
-          path: json['route'],
+  factory PlayState.fromJson(
+          Map<String, dynamic>
+              json) => //todo this might need support function for nested types
+      PlayState(
+          start: LatLng.fromJson(json['start'])!,
+          end: LatLng.fromJson(json['end'])!,
+          path: parsePathJson(json['path']),
           id: json['id'],
           title: json['title'],
           totalSteps: json['totalSteps'],
-          current: json['current'],
-          bounds: json['bounds'],
+          current: LatLng.fromJson(json['current'])!,
+          bounds: LatLngBounds.fromList(json['bounds'])!,
           distance: json['distance'],
           org: Org.fromJson(json['org']));
 }
-
+List<LatLng> parsePathJson(List<dynamic> raw){
+  return raw.map((e) => LatLng.fromJson(raw)!).toList();
+}
 //helper class for the setup map
 class PointSelection {
   final LatLng start;
@@ -84,26 +84,4 @@ class PointSelection {
 
   PointSelection(this.start, this.end, this.polyLine, this.distance);
 }
-class Org{
-  final String id;
-  final String name;
-  final List<String> members;
 
-  Org({required this.id, required this.name, required this.members});
-
-  factory Org.fromJson(Map<String, dynamic> json) =>
-    Org(
-      id: json['id'],
-      name: json['name'],
-      members: json['members'] as List<String>
-    );
-
-  Map<String, dynamic> toJson() =>
-      {
-        'id': this.id,
-        'name': this.name,
-        'members': this.members
-      };
-
-
-}

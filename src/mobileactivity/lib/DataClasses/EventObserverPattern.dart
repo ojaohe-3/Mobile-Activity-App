@@ -8,18 +8,18 @@ abstract class Observer{
 }
 
 class Subject{
-  List<Observer>? observers;
+  List<Observer> observers = List.empty();
 
-  Subject(){
-    observers = List.empty();
-  }
   void add(Observer obs){
-    observers!.add(obs);
+    observers.add(obs);
   }
 
   void remove(Observer obs){
-    observers!.remove(obs);
+    observers.remove(obs);
   }
 
+  void run(dynamic args){
+    observers.forEach((observer) => observer.update(args));
+  }
 
 }

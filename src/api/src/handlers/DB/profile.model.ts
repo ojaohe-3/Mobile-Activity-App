@@ -1,7 +1,7 @@
 import { Document, model, Model, Schema } from "mongoose";
 
 interface IProfileDocument extends Document {
-  exists(): any;
+  exist(): any;
   name: string;
   oid: string;
 }
@@ -24,7 +24,7 @@ profileScheme.method("toJSON", function () {
 });
 
 profileScheme.method("exist", async function () {
-  return await this.model("Profile").find({ id: this.id }, (err) => {
+  return await this.model("profile").find({ id: this.id }, (err) => {
     if (err) throw new Error(err.message);
   });
 });
@@ -33,4 +33,4 @@ export interface ProfileModel extends Model<IProfileDocument> {
   query(query: Object): any;
 }
 export { IProfileDocument as IProfileDocument, profileScheme };
-export default model<IProfileDocument>("Profile", profileScheme) as ProfileModel;
+export default model<IProfileDocument>("profile", profileScheme) as ProfileModel;

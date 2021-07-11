@@ -23,14 +23,14 @@ export default class UserSessions {
 
   private async fetchIndexes() {
     const raw = await MongoDBConnector.instance.findAll(MongoModels.PROFILE);
-    if(raw)
-      raw.forEach((e: { id: string; }) => this._allUsers.push(e.id));
+    if (raw) raw.forEach((e: { id: string }) => this._allUsers.push(e.id));
   }
 
   private async unloaded(id: string): Promise<IProfile | null> {
     await this.fetchIndexes();
     let unloaded = this._allUsers.filter((e) => e === id);
-    if (unloaded.length === 1) return await MongoDBConnector.instance.findOne(id, MongoModels.PROFILE);
+    if (unloaded.length === 1)
+      return await MongoDBConnector.instance.findOne(id, MongoModels.PROFILE);
     else return null;
   }
 
@@ -39,7 +39,7 @@ export default class UserSessions {
       return this._activeUsers.get(id)!;
     } else {
       const unloaded = await this.unloaded(id);
-      assert(unloaded)
+      assert(unloaded);
       const data = createProfile(unloaded);
       this._activeUsers.set(id, data);
       return data;
@@ -47,8 +47,14 @@ export default class UserSessions {
   }
 
   public addUser(profile: Profile): void {
-  
-    MongoDBConnector.instance.insert({_id: profile.id, name: profile.name, oid: profile.oid} as IProfileDocument, MongoModels.PROFILE);
+    let oid = profile.oid;
+    if (profile.oid.length < 12)
+      // FIXME
+      oid = "000000000000";
+    MongoDBConnector.instance.insert(
+      { name: profile.name, oid: oid } as Partial<IProfileDocument>,
+      MongoModels.PROFILE
+    );
     this._allUsers.push(profile.id);
     this._activeUsers.set(profile.id, profile);
   }
@@ -65,9 +71,24 @@ export default class UserSessions {
     this._activeUsers.set(profile.id, profile);
   }
 
-  public updateUser(id: string){
-      assert(this._activeUsers.has(id))
-      const profile = this._activeUsers.get(id)!;
-      MongoDBConnector.instance.update(id, {name: profile.name, oid: profile.oid} as IProfileDocument, MongoModels.PROFILE);
+  public updateUser(id: string, data: Partial<IProfile>) {
+    assert(this._activeUsers.has(id));
+    const profile = this._activeUsers.get(id)!;
+    MongoDBConnector.instance.update(
+      id,
+      { name: profile.name, oid: profile.oid } as Partial<IProfileDocument>,
+      MongoModels.PROFILE
+    );
+  }
+  public async hasUser(id: string): Promise<boolean> {
+    await this.fetchIndexes();
+    if (this._activeUsers.has(id)) return true;
+    if (this._allUsers.indexOf(id) != -1) return true;
+    return false;
+  }
+  public async defaultOid(): Promise<string | null> {
+    const raw = await MongoDBConnector.Models.Org.findOne({name: 'unassinged'});
+    if(!raw) return null;
+    return raw!._id as string;
   }
 }

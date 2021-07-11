@@ -1,6 +1,7 @@
 import { Router, Request, Response } from "express";
 import UserSessions from "../handlers/UserSessions";
 import Profile, { createProfile, IProfile } from "../models/Profile";
+import mongoose from "mongoose";
 import IResponse from "../models/response.model";
 
 const profileAPI = Router();
@@ -26,10 +27,18 @@ profileAPI.get("/", (req : Request, res : Response) => {
     res.json(handler.activeUsers.values());
 });
 
-profileAPI.post("/", (req : Request, res : Response) => {
+profileAPI.post("/", async (req : Request, res : Response) => {
     try {
-        const data = req.body as IProfile
-        UserSessions.Instance.addUser(createProfile(data))
+        const data = req.body as Partial<IProfile>
+        const name = data.name!
+        let oid = ""
+        if(data.oid) oid = data.oid
+        else {
+            const def = await handler.defaultOid();
+            oid = def!;         
+        }
+
+        UserSessions.Instance.addUser(createProfile({name : name, oid : oid, id: data.id ? data.id : ""}));
         const response : IResponse = {
             message: "Success! user added!",
             data: data,

@@ -18,7 +18,7 @@ class _ProgressWidgetState extends State<ProgressWidget> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      child: SizedBox(child: Image.asset('☺assets/placeholder_progressbar.png')),
+      child: SizedBox(child: Image.asset('assets/placeholder_progressbar.png')),
     );
   }
 }

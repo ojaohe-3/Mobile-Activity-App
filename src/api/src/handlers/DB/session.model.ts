@@ -1,8 +1,8 @@
 import { Document, Schema, model, Model } from "mongoose";
-import { GeoCoordinates, GeoCoordinatesBound } from "./geoCoordinates.model";
+import { GeoCoordinates, GeoCoordinatesBound } from "../../models/geoCoordinates.model";
 
 interface ISessionDocument extends Document {
-  exists(): any;
+  exist(): any;
   orgId: string;
   name: string;
   start: GeoCoordinates;
@@ -45,7 +45,7 @@ sessionScheme.method("toJSON", function () {
 });
 
 sessionScheme.method("exist", async function () {
-  return await this.model("Session").find({ id: this.id }, (err) => {
+  return await this.model("session").find({ id: this.id }, (err) => {
     if (err) throw new Error(err.message);
   });
 });
@@ -54,5 +54,5 @@ export interface SessionModel extends Model<ISessionDocument> {
   query(query: Object): any;
 }
 export { ISessionDocument as ISessionDocument, sessionScheme };
-export default model<ISessionDocument>("Session", sessionScheme) as SessionModel;
+export default model<ISessionDocument>("session", sessionScheme) as SessionModel;
 

@@ -1,5 +1,18 @@
+// import ProgramController from "./handlers/ProgramController";
+// ProgramController.instance;
 
-import ProgramController from "./handlers/ProgramController";
+import { createServer } from "http";
+import app from "./app";
+import { WebSocketHandler } from "./websocket";
 
-const contoller = ProgramController.instance;
+const server = createServer(app);
 
+const dotenv = require("dotenv");
+dotenv.config();
+
+const port = process.env.PORT || 5000;
+const wss = new WebSocketHandler(server);
+
+server.listen(app.get("port"), () => {
+  console.log(`Server Listening on port ${port}`);
+});
