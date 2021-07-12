@@ -118,10 +118,11 @@ organizationAPI.delete("/:id/:uid", async (req : Request, res : Response) => {
     
 });
 
-organizationAPI.get("/:id", (req : Request, res : Response) => {
+organizationAPI.get("/:id", async (req : Request, res : Response) => {
     const id = req.params.id;
     try {
-        res.json(handler.getOrg(id))
+        const data = await handler.getOrg(id);
+        res.json(data)
     } catch (error) {
         const response : IResponse = {
             message : 'Error, no such id',
