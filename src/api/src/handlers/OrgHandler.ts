@@ -68,15 +68,11 @@ export default class OrgHandler {
     this._orgs.set(org._id, org);
   }
 
-  public get orgs(): Map<string, Organization> {
-    this.fetchIndexes();
-    const ref: Map<string, Organization> = new Map<string, Organization>();
-    this._orgs.forEach((e, key) => ref.set(key, e));
-    return ref;
+  public get orgs(): Organization[] {
+    return Array.from(this._orgs.values());
   }
 
   public get indexes() : Array<String>{
-    // console.log(this._allorgs)
     return this._allorgs;
   }
 
