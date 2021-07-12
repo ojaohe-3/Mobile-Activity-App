@@ -12,7 +12,7 @@ const handler = OrgHandler.Instance;
 
 organizationAPI.get("/", (req : Request, res : Response) => {
     //TODO attribute security
-    res.json(handler.orgs.values())    
+    res.json(handler.orgs)    
 });
 organizationAPI.get("/indexes", (req : Request, res : Response) => {
     //TODO attribute security

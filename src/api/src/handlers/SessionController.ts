@@ -62,12 +62,8 @@ export default class SessionController {
       return data;
     }
   }
-  public items(): Map<string, GameSession> {
-    const s = new Map<string, GameSession>();
-    this._sessions.forEach((session, id) => {
-      s.set(id, session);
-    });
-    return s;
+  public items(): GameSession[] {
+    return Array.from(this._sessions.values());
   }
 
   public async update(session: ISession) {
