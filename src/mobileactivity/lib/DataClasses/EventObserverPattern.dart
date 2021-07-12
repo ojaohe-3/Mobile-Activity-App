@@ -8,7 +8,7 @@ abstract class Observer{
 }
 
 class Subject{
-  List<Observer> observers = List.empty();
+  List<Observer> observers = List.empty(growable: true);
 
   void add(Observer obs){
     observers.add(obs);

@@ -8,10 +8,13 @@ class Org {
   factory Org.fromJson(Map<String, dynamic> json) => Org(
       id: json['id'],
       name: json['name'],
-      members: json['members'] as List<String>);
-  List<String> parseMembers(List<dynamic> raw){
-    return raw.map((e) => e.toString()).toList();
-  }
+      members: parseMembers(json['members']))
+  ;
   Map<String, dynamic> toJson() =>
       {'id': this.id, 'name': this.name, 'members': this.members};
+
+}
+
+List<String> parseMembers(List<dynamic> raw){
+  return raw.map((e) => e.toString()).toList();
 }

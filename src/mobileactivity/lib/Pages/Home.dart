@@ -39,7 +39,6 @@ class _HomeState extends State<Home> {
               TextButton(
                 onPressed: () async {
                   var state = await FileModule.loadData("local_state_last.json");
-                  // print(state['path']);
                   if(state != null)
                     Navigator.pushNamed(context, '/setup/state', arguments: PlayState.fromJson(state));
                 },

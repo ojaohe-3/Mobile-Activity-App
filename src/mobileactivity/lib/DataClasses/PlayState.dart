@@ -73,7 +73,7 @@ class PlayState {
           org: Org.fromJson(json['org']));
 }
 List<LatLng> parsePathJson(List<dynamic> raw){
-  return raw.map((e) => LatLng.fromJson(raw)!).toList();
+  return raw.map((e) => LatLng.fromJson(e)!).toList();
 }
 //helper class for the setup map
 class PointSelection {

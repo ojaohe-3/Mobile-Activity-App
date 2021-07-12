@@ -22,33 +22,23 @@ class _GMapState extends State<GMap> implements Observer {
   late CameraTargetBounds _initBound;
   late GoogleMapController _googleMapController;
 
-  webListener? _socketObserver;
-  Observer? _bluetoothObserver;
 
   Marker? _start;
   Marker? _end;
   Marker? _current;
 
-  List<Profile> profiles = List.empty();
+  List<Profile> profiles = List.empty(growable: true);
   @override
   void initState() {
     //todo ask premission from the user if we need to setup device, then if
     // BluetoothModule.instance.init();
     // BluetoothModule.instance.add(this);
-    _socketObserver = webListener(onSocketEvent);
-    WebSocketsController.instance.add(_socketObserver!);
+    WebSocketsController.instance.add(this!);
     //todo at bluetooth event,
     super.initState();
   }
 
-  void onSocketEvent(){
-    var message = _socketObserver!.reciveQueue.last;
-    _socketObserver!.reciveQueue.removeLast();
-    var raw = json.decode(message);
-    _state.totalSteps = raw['data']['steps'];
-    _state.current = raw['data']['nPos'];
-    //todo report user added
-  }
+
 
   @override
   void dispose() {
@@ -117,25 +107,9 @@ class _GMapState extends State<GMap> implements Observer {
 
   @override
   void update(args) {
-    //todo implement bluetooth
-  }
-}
-//todo display 1, the current position of the sessions progress,
-//todo 2 update progress if event fires through the playstate callback.
-//todo 3 list all members if any, and display there progress. for now also add a placeholder
+    if(args != "close"){
 
-class webListener extends Observer {
-  List<String> reciveQueue = List.empty();
-  Function callback;
-
-  webListener(this.callback);
-
-  @override
-  void update(args) {
-    if (args != "closed") {
-      reciveQueue.add(args);
-      this.callback();
     }
-    super.update(args);
   }
 }
+

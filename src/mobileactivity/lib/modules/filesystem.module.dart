@@ -9,9 +9,7 @@ class FileModule{
     File file = File('$dir/$fn');
     bool exist = await file.exists();
     if(!exist) await file.create();
-    var sink = file.openWrite();
-    sink.write(json.encode(data));
-    sink.close();
+    file.writeAsString(data);
 
   }
 

@@ -162,8 +162,8 @@ class _StateSetupState extends State<StateSetup> {
                           org: _org!);
                       FileModule.writeDataToFile(
                           "local_state_last.json", state);
-                      FileModule.appendDataToFile("local_state.json", state);
-                      ApiCalls.postAppAPI('session/',
+                      FileModule.appendDataToFile("local_state.json", state.toJson());
+                      ApiCalls.postAppAPI('session',
                           state); //todo translate this into a format that the api can use
                       Navigator.of(context).pop(state);
                     }
