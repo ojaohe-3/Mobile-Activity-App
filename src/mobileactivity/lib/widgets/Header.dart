@@ -12,7 +12,7 @@ class Header extends StatelessWidget {
               //   onPressed: (){},
               //   color: Colors.blue[900],
               // ),
-              Image.asset('assets/ergo_logo.png', fit: BoxFit.contain, height: 40,
+              Image.asset('assets/alter-ergo-logo.png', fit: BoxFit.contain, height: 40,
             )]);
   }
 }
