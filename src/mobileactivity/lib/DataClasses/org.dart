@@ -6,12 +6,12 @@ class Org {
   Org({required this.id, required this.name, required this.members});
 
   factory Org.fromJson(Map<String, dynamic> json) => Org(
-      id: json['id'],
+      id: json['_id'],
       name: json['name'],
       members: parseMembers(json['members']))
   ;
   Map<String, dynamic> toJson() =>
-      {'id': this.id, 'name': this.name, 'members': this.members};
+      {'_id': this.id, 'name': this.name, 'members': this.members};
 
 }
 

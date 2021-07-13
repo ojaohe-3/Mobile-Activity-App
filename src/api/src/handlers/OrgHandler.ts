@@ -3,6 +3,7 @@ import Organization, { createOrganization, IOrg } from "../models/Organization";
 import { MongoDBConnector, MongoModels } from "./DB/MongoDBConnector";
 
 export default class OrgHandler {
+
   private static instance?: OrgHandler;
   private _orgs: Map<string, Organization>;
   private _allorgs: Array<string>;
@@ -84,5 +85,9 @@ export default class OrgHandler {
       org.members = data.members;
       this._orgs.set(_id, org);
     }
+  }
+
+  public async getAll(): Promise<IOrg[]> {
+    return await MongoDBConnector.instance.findAll(MongoModels.ORG);
   }
 }
