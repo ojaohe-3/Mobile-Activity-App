@@ -25,7 +25,10 @@ class Profile {
 
   Future<void> update({String? name, String? oid}) async {
     if (name != null) this.name = name;
-    if (oid != null) this.oid = oid;
+    if (oid != null) {
+      this.oid = oid;
+      await ApiCalls.postAppAPI("${local.oid}/", data)
+    }
     FileModule.writeDataToFile('local_profile.json', this.toJson());
     await ApiCalls.postAppAPI('profile', Profile.local.toJson());
   }

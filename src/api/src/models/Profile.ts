@@ -2,13 +2,13 @@ import { profile } from "console"
 
 export interface IProfile{
     readonly name: string
-    readonly id: string
+    readonly _id: string
     readonly oid: string
 }
 
 export function createProfile(profile : IProfile) : Profile{
     return new Profile(
-        profile.id,
+        profile._id,
         profile.name,
         profile.oid
     )
@@ -16,13 +16,13 @@ export function createProfile(profile : IProfile) : Profile{
 
 export default class Profile implements IProfile{
     name: string
-    id: string
+    _id: string
     oid: string
     
     constructor( _name: string, _id: string, _oid: string){
        
         this.name = _name
-        this.id = _id
+        this._id = _id
         this.oid = _oid
     }
 
