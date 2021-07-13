@@ -11,7 +11,7 @@ class OrgSelector extends StatefulWidget {
 }
 
 class _OrgSelectorState extends State<OrgSelector> {
-  List<Org> _orgs = List.empty();
+  List<Org> _orgs = List.empty(growable: true);
   @override
   void initState() {
     getItems();
