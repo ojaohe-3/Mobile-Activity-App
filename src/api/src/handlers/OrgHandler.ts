@@ -76,8 +76,12 @@ export default class OrgHandler {
     return this._allorgs;
   }
 
-  public updateOrg(_id: string, data: IOrg) {
-    assert(this._orgs.has(_id));
-    this._orgs.set(_id, createOrganization(data));
+  public updateOrg(_id: string, data: Partial<IOrg>) {
+    const org = this._orgs.get(_id);
+    if(org){
+      assert(data.members)
+      org.members = data.members;
+      this._orgs.set(_id, org);
+    }
   }
 }
