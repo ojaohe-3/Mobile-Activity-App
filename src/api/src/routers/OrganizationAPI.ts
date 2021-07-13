@@ -12,6 +12,12 @@ organizationAPI.get("/", (req: Request, res: Response) => {
   //TODO attribute security
   res.json(handler.orgs);
 });
+
+organizationAPI.get("/all", async (req: Request, res: Response) => {
+  //TODO attribute security
+  res.json(await handler.getAll());
+});
+
 organizationAPI.get("/indexes", (req: Request, res: Response) => {
   //TODO attribute security
   res.json(handler.indexes);
