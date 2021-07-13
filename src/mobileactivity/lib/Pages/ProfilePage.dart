@@ -12,7 +12,7 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
-  Profile _profile = Profile.local!;
+  Profile _profile = Profile.local;
   Org? _org;
 
   @override

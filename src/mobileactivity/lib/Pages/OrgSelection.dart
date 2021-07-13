@@ -21,10 +21,12 @@ class _OrgSelectorState extends State<OrgSelector> {
   Future<void> getItems() async {
     var raw =
         await ApiCalls.getAppAPI(endpoint: 'organization/all') as List<dynamic>;
-    raw.forEach((element) {
-      _orgs.add(Org.fromJson(element));
+
+    setState(() {
+      raw.forEach((element) {
+        _orgs.add(Org.fromJson(element));
+      });
     });
-    setState(() {});
   }
 
   @override
