@@ -38,7 +38,7 @@ profileAPI.post("/", async (req : Request, res : Response) => {
             oid = def!;         
         }
 
-        UserSessions.Instance.addUser(createProfile({name : name, oid : oid, id: data.id ? data.id : ""}));
+        UserSessions.Instance.addUser(createProfile({name : name, oid : oid, _id: data._id ? data._id : ""}));
         const response : IResponse = {
             message: "Success! user added!",
             data: data,
