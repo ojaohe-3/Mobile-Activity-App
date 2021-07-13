@@ -70,7 +70,7 @@ class _ProfileSetupState extends State<ProfileSetup> {
                           as Org;
                       if(_org != null)
                         Profile.local!.update(oid: _org!.id);
-                    })
+                    },)
               ],
             ),
           )
