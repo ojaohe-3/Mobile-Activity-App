@@ -55,8 +55,8 @@ export default class UserSessions {
       { name: profile.name, oid: oid } as Partial<IProfileDocument>,
       MongoModels.PROFILE
     );
-    this._allUsers.push(profile.id);
-    this._activeUsers.set(profile.id, profile);
+    this._allUsers.push(profile._id);
+    this._activeUsers.set(profile._id, profile);
   }
 
   public get activeUsers(): Map<string, Profile> {
@@ -68,7 +68,7 @@ export default class UserSessions {
   public replaceUser(id: string, profile: Profile): void {
     assert(this._activeUsers.has(id));
     this._activeUsers.delete(id);
-    this._activeUsers.set(profile.id, profile);
+    this._activeUsers.set(profile._id, profile);
   }
 
   public updateUser(id: string, data: Partial<IProfile>) {
