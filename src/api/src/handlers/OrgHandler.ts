@@ -90,7 +90,7 @@ export default class OrgHandler {
   public async getAll(): Promise<IOrg[]> {
     const raw = await MongoDBConnector.instance.findAll(MongoModels.ORG) as Array<any>;
     console.log(raw);
-    raw.map((data) => 
+    const res = raw.map((data) => 
       {
         console.log(data)
         const org : IOrg = {
@@ -101,6 +101,6 @@ export default class OrgHandler {
         return org;
       }
       )
-      return raw as IOrg[];
+      return res as IOrg[];
   }
 }
