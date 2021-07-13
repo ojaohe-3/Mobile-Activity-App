@@ -33,7 +33,7 @@ class _GMapState extends State<GMap> implements Observer {
     //todo ask premission from the user if we need to setup device, then if
     // BluetoothModule.instance.init();
     // BluetoothModule.instance.add(this);
-    WebSocketsController.instance.add(this!);
+    WebSocketsController.instance.add(this);
     //todo at bluetooth event,
     super.initState();
   }

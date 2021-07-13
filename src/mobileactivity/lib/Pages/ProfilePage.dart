@@ -21,7 +21,9 @@ class _ProfilePageState extends State<ProfilePage> {
     super.initState();
   }
   Future<void> getItems() async {
-    _org = Org.fromJson(await ApiCalls.getAppAPI(endpoint: 'organization/${_profile.oid}'));
+    var raw = await ApiCalls.getAppAPI(endpoint: 'organization/${_profile.oid}');
+    print(raw);
+    _org = Org.fromJson(raw);
     setState(() {
 
     });
