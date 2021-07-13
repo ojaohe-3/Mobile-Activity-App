@@ -13,7 +13,7 @@ class ProfileSetup extends StatefulWidget {
 
 class _ProfileSetupState extends State<ProfileSetup> {
   TextEditingController _nameInput = TextEditingController();
-  Profile _profile = Profile.local!;
+  Profile _profile = Profile.local;
   Org? _org;
   @override
   void dispose() {
@@ -51,7 +51,7 @@ class _ProfileSetupState extends State<ProfileSetup> {
             onSubmitted: (text) {
               print(text);
               print(_nameInput.text);
-              Profile.local!.update(name: text);
+              Profile.local.update(name: text);
             },
           ),
           Card(
@@ -69,7 +69,7 @@ class _ProfileSetupState extends State<ProfileSetup> {
                       _org = await Navigator.pushNamed(context, "/select/org")
                           as Org;
                       if(_org != null)
-                        Profile.local!.update(oid: _org!.id);
+                        Profile.local.update(oid: _org!.id);
                     },)
               ],
             ),
