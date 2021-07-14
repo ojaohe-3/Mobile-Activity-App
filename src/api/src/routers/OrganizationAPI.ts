@@ -1,8 +1,8 @@
 import { Router, Request, Response } from "express";
 import OrgHandler from "../handlers/OrgHandler";
 import UserSessions from "../handlers/UserSessions";
-import Organization, { createOrganization, IOrg } from "../models/Organization";
-import Profile, { createProfile, IProfile } from "../models/Profile";
+import { createOrganization, IOrg } from "../models/Organization";
+import  {  IProfile } from "../models/Profile";
 import IResponse from "../models/response.model";
 
 const organizationAPI = Router();
@@ -28,12 +28,13 @@ organizationAPI.post("/", (req: Request, res: Response) => {
     const data = req.body as IOrg;
     handler.addOrg(createOrganization(data));
     const response: IResponse = {
-      message: "Success, new orginization added!",
+      message: "Success, new organization added!",
       data: data,
       status: 200,
     };
     res.json(response);
   } catch (error) {
+    console.log("error occured!");
     const response: IResponse = {
       message: "could not process data object!",
       error: error,
@@ -50,17 +51,21 @@ organizationAPI.post("/:id/member", async (req: Request, res: Response) => {
     const data = req.body as IProfile;
     const org = await handler.getOrg(id);
     const user = await UserSessions.Instance.getUser(data._id);
+    const old = await handler.getOrg(user!.oid)!;
     user!.update({ oid: id });
     org!.add(data._id);
+    if(old!._id !== await UserSessions.Instance.defaultOid())
+      old?.remove(data._id);
     handler.updateOrg(org!._id, org!);
 
     const response: IResponse = {
-      message: "Success, new orginization added!",
+      message: "Success, new organization added!",
       data: data,
       status: 200,
     };
     res.json(response);
   } catch (error) {
+    console.log("error occured!");
     const response: IResponse = {
       message: "could not process data object!",
       error: error,
@@ -78,12 +83,13 @@ organizationAPI.put("/:id", (req: Request, res: Response) => {
     const data = req.body as Partial<IOrg>;
     handler.updateOrg(id, data);
     const response: IResponse = {
-      message: "Success, orginization updated!",
+      message: "Success, organization updated!",
       data: data,
       status: 200,
     };
     res.json(response);
   } catch (error) {
+    console.log("error occured!");
     const response: IResponse = {
       message: "could not process data object!",
       error: error,
@@ -106,6 +112,7 @@ organizationAPI.delete("/:id/:uid", async (req: Request, res: Response) => {
     };
     res.json(response);
   } catch (error) {
+    console.log("error occured!");
     const response: IResponse = {
       message: "could not find user!",
       error: error,
@@ -126,6 +133,7 @@ organizationAPI.get("/:id", async (req: Request, res: Response) => {
       res.json(data);
     }
   } catch (error) {
+    console.log("error occured!");
     const response: IResponse = {
       message: "Error, no such id",
       error: error,

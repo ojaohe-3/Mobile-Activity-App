@@ -1,3 +1,4 @@
+import console from "console";
 import { Router, Request, Response } from "express";
 import SessionController from "../handlers/SessionController";
 import { createSession, ISession } from "../models/GameSession";
@@ -12,6 +13,7 @@ sessionAPI.get("/:id", async (req : Request, res : Response) => {
         const item = await handler.getSession(id);
         res.json(item);
     } catch (error) {
+        console.log("error occured!")
         const response : IResponse = {
             message : 'Could not find member',
             error : error,
@@ -26,6 +28,7 @@ sessionAPI.get("/members/:id/", async (req : Request, res : Response) => {
         const item = await handler.getSession(id);
         res.json(item.members);
     } catch (error) {
+        console.log("error occured!")
         const response : IResponse = {
             message : 'Could not find member',
             error : error,
@@ -51,6 +54,7 @@ sessionAPI.post("/", (req : Request, res : Response) => {
         }
         res.json(response)
     } catch (error) {
+        console.log("error occured!")
         const response : IResponse = {
             message: "Could not process payload",
             status: 500,
@@ -71,6 +75,7 @@ sessionAPI.put("/:id", (req : Request, res : Response) => {
         }
         res.json(response)
     } catch (error) {
+        console.log("error occured!")
         const response : IResponse = {
             message: "Could not process payload",
             status: 500,
