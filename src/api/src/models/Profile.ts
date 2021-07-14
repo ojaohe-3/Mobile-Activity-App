@@ -8,8 +8,8 @@ export interface IProfile{
 
 export function createProfile(profile : IProfile) : Profile{
     return new Profile(
-        profile._id,
         profile.name,
+        profile._id,
         profile.oid
     )
 }

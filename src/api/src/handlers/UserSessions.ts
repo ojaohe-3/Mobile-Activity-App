@@ -33,17 +33,22 @@ export default class UserSessions {
 
   public addUser(profile: Partial<IProfile>): void {
     assert(profile.name && profile.oid);
+
     const res: IProfile = {
       name: profile.name,
       _id: "",
       oid: profile.oid,
     };
-    const id = mongoose.Types.ObjectId();
+    let id = mongoose.Types.ObjectId();
+    if(profile._id)
+      id = mongoose.Types.ObjectId(profile._id);
+      
     MongoDBConnector.Models.Profile.create({
       _id: id,
       name: res.name,
       oid: res.oid,
     });
+    console.log("usersession _id: "+ id);
     this.users.set(id.toString(), createProfile(res));
   }
 
