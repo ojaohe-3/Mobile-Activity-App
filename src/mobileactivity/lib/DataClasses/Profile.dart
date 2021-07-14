@@ -35,7 +35,6 @@ class Profile {
       await ApiCalls.postAppAPI("organization/${this.oid}/members", this.toJson());
     }
     FileModule.writeDataToFile('profile_local.json', this.toJson());
-    await ApiCalls.postAppAPI('profile', this.toJson());
   }
 
   static Future<void> createInstance() async {

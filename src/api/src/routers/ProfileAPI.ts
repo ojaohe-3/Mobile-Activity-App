@@ -73,7 +73,7 @@ profileAPI.put("/:id", (req : Request, res : Response) => {
     try {
         const id = req.params.id
         const data = req.body as IProfile
-        UserSessions.Instance.replaceUser(id, createProfile(data))
+        UserSessions.Instance.updateUser(id, data)
         const response : IResponse = {
             message: "Success! user added!",
             data: data,
