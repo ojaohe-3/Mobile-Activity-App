@@ -23,7 +23,17 @@ export default class UserSessions {
 
   private async fetchIndexes() {
     const raw = await MongoDBConnector.instance.findAll(MongoModels.PROFILE);
-    if (raw) raw.forEach((e: any) => this.addUser(e));
+    if (raw)
+      raw.forEach((e: any) => {
+        this.users.set(
+          e._id.toString(),
+          createProfile({
+            _id: e._id.toString(),
+            oid: e.oid.toString(),
+            name: e.name,
+          })
+        );
+      });
   }
 
   public async getUser(id: string): Promise<Profile | undefined> {
@@ -39,16 +49,15 @@ export default class UserSessions {
       _id: "",
       oid: profile.oid,
     };
-    let id = mongoose.Types.ObjectId();
-    if(profile._id)
-      id = mongoose.Types.ObjectId(profile._id);
+    const id = profile._id
+      ? mongoose.Types.ObjectId(profile._id)
+      : mongoose.Types.ObjectId();
 
     MongoDBConnector.Models.Profile.create({
       _id: id,
       name: res.name,
       oid: res.oid,
     });
-    console.log("usersession _id: "+ id);
     this.users.set(id.toString(), createProfile(res));
   }
 
@@ -58,14 +67,8 @@ export default class UserSessions {
     return ref;
   }
 
-  public replaceUser(id: string, profile: Profile): void {
-    assert(this.users.has(id));
-    this.users.delete(id);
-    this.users.set(profile._id, profile);
-  }
-
-  public updateUser(id: string, data: Partial<IProfile>) {
-    assert(this.users.has(id));
+  public async updateUser(id: string, data: Partial<IProfile>) {
+    await this.fetchIndexes();
     const profile = this.users.get(id)!;
     MongoDBConnector.instance.update(
       id,
@@ -73,6 +76,7 @@ export default class UserSessions {
       MongoModels.PROFILE
     );
   }
+
   public async hasUser(id: string): Promise<boolean> {
     await this.fetchIndexes();
     return this.users.has(id);

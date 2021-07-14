@@ -46,7 +46,12 @@ export default class OrgHandler {
       const unloaded = await this.unloaded(id);
 
       if(unloaded){
-        const data = createOrganization(unloaded!);
+        const raw : IOrg= {
+          _id: unloaded._id.toString(),
+          name: unloaded.name,
+          members: unloaded.members,
+        }
+        const data = createOrganization(raw);
         this._orgs.set(id, data);
         return data;
       }else{
@@ -79,6 +84,7 @@ export default class OrgHandler {
   }
 
   public async updateOrg(_id: string, data: Partial<IOrg>) {
+    console.log(data)
     const org = this._orgs.get(_id);
     if(org){
       assert(data.members)

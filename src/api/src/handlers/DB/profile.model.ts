@@ -8,7 +8,7 @@ interface IProfileDocument extends Document {
 }
 
 const profileScheme = new Schema({
-  _id: {type: Schema.Types.ObjectId, require: true, unique: true},
+  _id: {type: Schema.Types.ObjectId, require: true},
   name: { type: Schema.Types.String, require: true },
   oid: { type: Schema.Types.ObjectId, require: true },
 });
