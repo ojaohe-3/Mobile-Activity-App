@@ -32,8 +32,11 @@ export default class Organization implements IOrg {
 
     public remove(_id: string) : void {
         let index = this.members.indexOf(_id)
-    
+        console.log("Org Remove member from "+ this.name)
+        console.log(this.members)
         if(index >= 0)
             this.members.splice(index, 1)
+        console.log(this.members)
+
     }
 }
