@@ -55,10 +55,22 @@ class _ProfilePageState extends State<ProfilePage> {
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: Card(
-
-                child: Text(
-              "ID: ${_profile.id}",
-              style: TextStyle(fontSize: 20),
+                child: Row(
+              children: [
+                Text(
+                  " ID: ${_profile.id}",
+                  style: TextStyle(fontSize: 20),
+                ),
+                IconButton(
+                  onPressed: () async {
+                    await Profile.generate();
+                    setState(() {
+                      _profile = Profile.local;
+                    });
+                  },
+                  icon: Icon(Icons.refresh),
+                )
+              ],
             )),
           ),
           Padding(
@@ -74,9 +86,7 @@ class _ProfilePageState extends State<ProfilePage> {
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
           await Navigator.of(context).pushNamed("/create/profile");
-          setState(() {
-
-          });
+          setState(() {});
         },
         child: Icon(Icons.create),
       ),

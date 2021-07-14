@@ -1,12 +1,14 @@
-import { Document, model, Model, Schema } from "mongoose";
+import mongoose, { Document, model, Model, Schema } from "mongoose";
 
 interface IProfileDocument extends Document {
   exist(): any;
+  _id: string;
   name: string;
   oid: string;
 }
 
 const profileScheme = new Schema({
+  _id: {type: Schema.Types.ObjectId, require: true, unique: true},
   name: { type: Schema.Types.String, require: true },
   oid: { type: Schema.Types.ObjectId, require: true },
 });

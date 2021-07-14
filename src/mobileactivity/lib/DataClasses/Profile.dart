@@ -45,15 +45,18 @@ class Profile {
         Profile.local = Profile.fromJson(raw);
 
         if(!Profile.local.isInit()) {
-          raw = await ApiCalls.getAppAPI(endpoint: "profile/create");
-          Profile.local = Profile.fromJson(raw);
+          Profile.generate();
         }
       }
     } else {
-      var raw = await ApiCalls.getAppAPI(endpoint: "profile/create");
-      Profile.local = Profile.fromJson(raw);
+      Profile.generate();
     }
     FileModule.writeDataToFile('profile_local.json', Profile.local.toJson());
 
+  }
+
+  static Future<void> generate() async {
+    var raw = await ApiCalls.getAppAPI(endpoint: "profile/create");
+    Profile.local = Profile.fromJson(raw);
   }
 }
