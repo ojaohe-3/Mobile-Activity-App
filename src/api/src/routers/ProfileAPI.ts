@@ -7,6 +7,18 @@ import IResponse from "../models/response.model";
 const profileAPI = Router();
 const handler = UserSessions.Instance;
 
+profileAPI.get("/create", async (req : Request, res : Response) => {
+    const defautlId = await handler.defaultOid()
+    const newUser : IProfile = {
+        name: "default",
+        oid: defautlId!,
+        _id: mongoose.Types.ObjectId().toString(),
+    }
+    await handler.addUser(createProfile(newUser));
+    res.json(newUser);
+
+});
+
 
 profileAPI.get("/:id", (req : Request, res : Response) => {
     const id = req.params.id;
@@ -21,6 +33,7 @@ profileAPI.get("/:id", (req : Request, res : Response) => {
         res.status(404).json(response);
     }
 });
+
 
 //TODO remove, this is only for debuging
 profileAPI.get("/", (req : Request, res : Response) => {
