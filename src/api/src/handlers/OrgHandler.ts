@@ -44,7 +44,7 @@ export default class OrgHandler {
     if (this._orgs.has(id)) return this._orgs.get(id)!;
     else {
       const unloaded = await this.unloaded(id);
-      console.log(unloaded)
+
       if(unloaded){
         const data = createOrganization(unloaded!);
         this._orgs.set(id, data);
