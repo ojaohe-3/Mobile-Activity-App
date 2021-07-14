@@ -50,7 +50,7 @@ organizationAPI.post("/:id/member", async (req: Request, res: Response) => {
     const data = req.body as IProfile;
     const org = await handler.getOrg(id);
     const user = await UserSessions.Instance.getUser(data._id);
-    user.update({ oid: id });
+    user!.update({ oid: id });
     org!.add(data._id);
     handler.updateOrg(org!._id, org!);
 
