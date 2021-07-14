@@ -160,6 +160,7 @@ class _StateSetupState extends State<StateSetup> {
                               _mapData!.start, _mapData!.end, 0.2),
                           distance: _mapData!.distance,
                           org: _org!);
+
                       FileModule.writeDataToFile(
                           "local_state_last.json", state);
                       FileModule.appendDataToFile("local_state.json", state.toJson());

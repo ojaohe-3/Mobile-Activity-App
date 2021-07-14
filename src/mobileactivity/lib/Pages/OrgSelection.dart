@@ -52,6 +52,7 @@ class _OrgSelectorState extends State<OrgSelector> {
                   onTap: () {
                     Navigator.pop(context, _orgs[index]);
                   },
+                  leading: Icon(Icons.api)
                 ),
               );
             }));

@@ -25,6 +25,7 @@ profileAPI.get("/:id", (req : Request, res : Response) => {
     try {
         res.json(handler.getUser(id));
     } catch (error) {
+        console.log("error occured!")
         const response : IResponse = {
             message: "could not find member with id: " + id,
             error: error,
@@ -59,6 +60,7 @@ profileAPI.post("/", async (req : Request, res : Response) => {
         }
         res.json(response)
     } catch (error) {
+        console.log("error occured!")
         const response : IResponse = {
             message: "Error, could not process data",
             error: error,
@@ -79,6 +81,7 @@ profileAPI.put("/:id", (req : Request, res : Response) => {
         }
         res.json(response)
     } catch (error) {
+        console.log("error occured!")
         const response : IResponse = {
             message: "Error, could not process data",
             error: error,

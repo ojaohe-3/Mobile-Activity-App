@@ -142,4 +142,26 @@ class ApiCalls {
       return null;
     }
   }
+
+
+  static Future<dynamic>? putAppAPI(String endpoint, dynamic data) async {
+    await dotenv.load(fileName: 'lib/.env');
+    String? url = dotenv.env['API_ENDPOINT'];
+    if (url == null) {
+      throw Exception(
+          "API endpoint is missing in the .env file! please add in .env ");
+    }
+    url = url + endpoint;
+
+    try {
+      final req = await Dio().put(url, data: data);
+      if (req.statusCode == 200)
+        return req.data;
+      else
+        throw Exception("Request failed!");
+    } catch (e) {
+      print(e);
+      return null;
+    }
+  }
 }

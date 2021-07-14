@@ -1,24 +1,28 @@
 import 'package:mobileactivity/modules/filesystem.module.dart';
 import 'package:mobileactivity/modules/networking.monule.dart';
 
+//todo caching
 class Profile {
   String name;
   String oid;
-  final String id;
+  String id;
+
+  bool isInit(){
+    return this.id != "000000000000";
+  }
 
   static Profile local =
       Profile(name: "default", oid: "000000000000", id: "000000000000");
-  Profile({required this.name, required this.oid, required this.id}) {
-    createInstance();
-  }
+  Profile({required this.name, required this.oid, required this.id});
+
   factory Profile.fromJson(Map<String, dynamic> json) => Profile(
         oid: json['oid'],
         name: json['name'],
-        id: json['id'],
+        id: json['_id'],
       );
 
   Map<String, dynamic> toJson() => {
-        'id': this.id,
+        '_id': this.id,
         'name': this.name,
         'oid': this.oid,
       };
@@ -27,23 +31,29 @@ class Profile {
     if (name != null) this.name = name;
     if (oid != null) {
       this.oid = oid;
-      await ApiCalls.postAppAPI("${local.oid}/", data)
+      await ApiCalls.putAppAPI("profile/${this.id}/", this.toJson());
+      await ApiCalls.postAppAPI("organization/${this.oid}/members", this.toJson());
     }
-    FileModule.writeDataToFile('local_profile.json', this.toJson());
-    await ApiCalls.postAppAPI('profile', Profile.local.toJson());
+    FileModule.writeDataToFile('profile_local.json', this.toJson());
+    await ApiCalls.postAppAPI('profile', this.toJson());
   }
 
   static Future<void> createInstance() async {
-    if (await FileModule.fileExist('local_profile.json')) {
-      var raw = await FileModule.loadData('local_profile.json');
-      print(raw);
+    if (await FileModule.fileExist('profile_local.json')) {
+      var raw = await FileModule.loadData('profile_local.json');
       if (raw != null) {
         Profile.local = Profile.fromJson(raw);
-        await ApiCalls.postAppAPI('profile', Profile.local.toJson());
+
+        if(!Profile.local.isInit()) {
+          raw = await ApiCalls.getAppAPI(endpoint: "profile/create");
+          Profile.local = Profile.fromJson(raw);
+        }
       }
     } else {
-      Profile.local =
-          Profile(name: "default", oid: "000000000000", id: "000000000000");
+      var raw = await ApiCalls.getAppAPI(endpoint: "profile/create");
+      Profile.local = Profile.fromJson(raw);
     }
+    FileModule.writeDataToFile('profile_local.json', Profile.local.toJson());
+
   }
 }

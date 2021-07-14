@@ -20,22 +20,23 @@ class _ProfilePageState extends State<ProfilePage> {
     getItems();
     super.initState();
   }
-  Future<void> getItems() async {
-    var raw = await ApiCalls.getAppAPI(endpoint: 'organization/${_profile.oid}');
-    print(raw);
-    _org = Org.fromJson(raw);
-    setState(() {
 
+  Future<void> getItems() async {
+    await Profile.createInstance();
+    var raw =
+        await ApiCalls.getAppAPI(endpoint: 'organization/${_profile.oid}');
+    setState(() {
+      _org = Org.fromJson(raw);
+      _profile = Profile.local;
     });
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Header(),
-        iconTheme: IconThemeData(
-            color: Colors.blue[900]
-        ),
+        iconTheme: IconThemeData(color: Colors.blue[900]),
         centerTitle: true,
         backgroundColor: Colors.white70,
       ),
@@ -45,25 +46,40 @@ class _ProfilePageState extends State<ProfilePage> {
         children: [
           Padding(
             padding: const EdgeInsets.all(8.0),
-            child: Text(_profile.name, style: TextStyle(fontSize: 20),),
+            child: Card(
+                child: Text(
+              "name: ${_profile.name}",
+              style: TextStyle(fontSize: 20),
+            )),
           ),
           Padding(
             padding: const EdgeInsets.all(8.0),
-            child: Text(_profile.id, style: TextStyle(fontSize: 20),),
+            child: Card(
+
+                child: Text(
+              "ID: ${_profile.id}",
+              style: TextStyle(fontSize: 20),
+            )),
           ),
           Padding(
             padding: const EdgeInsets.all(8.0),
-            child: Text(_org != null ? _org!.name : "loading..",style: TextStyle(fontSize: 20),),
+            child: Card(
+                child: Text(
+              "Member of: ${_org != null ? _org!.name : "loading.."}",
+              style: TextStyle(fontSize: 20),
+            )),
           ),
         ],
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.pushNamed(context, "/create/profile");
+        onPressed: () async {
+          await Navigator.of(context).pushNamed("/create/profile");
+          setState(() {
+
+          });
         },
         child: Icon(Icons.create),
       ),
     );
   }
 }
-// todo display user infromation, allow for edit, if no profile exist make a setup that is simple
