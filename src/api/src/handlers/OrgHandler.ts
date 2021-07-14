@@ -78,13 +78,14 @@ export default class OrgHandler {
     return this._allorgs;
   }
 
-  public updateOrg(_id: string, data: Partial<IOrg>) {
+  public async updateOrg(_id: string, data: Partial<IOrg>) {
     const org = this._orgs.get(_id);
     if(org){
       assert(data.members)
       org.members = data.members;
-      this._orgs.set(_id, org);
+      this._orgs.set(_id, org!);
     }
+    await MongoDBConnector.instance.update(org!._id, {name: org!.name, members: org!.members}, MongoModels.ORG)
   }
 
   public async getAll(): Promise<IOrg[]> {

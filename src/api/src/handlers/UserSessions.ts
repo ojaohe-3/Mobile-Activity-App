@@ -42,7 +42,7 @@ export default class UserSessions {
     let id = mongoose.Types.ObjectId();
     if(profile._id)
       id = mongoose.Types.ObjectId(profile._id);
-      
+
     MongoDBConnector.Models.Profile.create({
       _id: id,
       name: res.name,
@@ -69,7 +69,7 @@ export default class UserSessions {
     const profile = this.users.get(id)!;
     MongoDBConnector.instance.update(
       id,
-      { name: profile.name, oid: profile.oid } as Partial<IProfileDocument>,
+      { name: data.name, oid: data.oid } as Partial<IProfileDocument>,
       MongoModels.PROFILE
     );
   }

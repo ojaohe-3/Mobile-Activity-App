@@ -56,7 +56,7 @@ organizationAPI.post("/:id/member", async (req: Request, res: Response) => {
     org!.add(data._id);
     if(old!._id !== await UserSessions.Instance.defaultOid())
       old?.remove(data._id);
-    handler.updateOrg(org!._id, org!);
+    await handler.updateOrg(org!._id, org!);
 
     const response: IResponse = {
       message: "Success, new organization added!",
