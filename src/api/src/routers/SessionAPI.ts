@@ -1,8 +1,9 @@
-import console from "console";
+import console, { assert } from "console";
 import { Router, Request, Response } from "express";
 import SessionController from "../handlers/SessionController";
 import { createSession, ISession } from "../models/GameSession";
 import IResponse from "../models/response.model";
+import mongoose from "mongoose";
 //TODO authentication
 const sessionAPI = Router();
 const handler = SessionController.Instance;
@@ -38,19 +39,24 @@ sessionAPI.get("/members/:id/", async (req : Request, res : Response) => {
     }
 });
 
-sessionAPI.get("/", (req : Request, res : Response) => {
+sessionAPI.get("/", async (req : Request, res : Response) => {
     //TODO attribute security, only list for members
-    res.json(handler.items());
+    res.json(await handler.items());
 }); 
 
 sessionAPI.post("/", (req : Request, res : Response) => {
     try {
-        const data = req.body as ISession;
-        handler.setSession(createSession(data));
+        const data = req.body as Omit<ISession, "_id" >;
+        const id = mongoose.Types.ObjectId().toString();
+        const raw : ISession = {
+            ...data,
+            _id: id,
+        }
+        handler.addSession(createSession(raw));
         const response : IResponse = {
             message : 'Success! Session created!',
             status : 200,
-            data : data,
+            data : raw,
         }
         res.json(response)
     } catch (error) {
@@ -66,8 +72,10 @@ sessionAPI.post("/", (req : Request, res : Response) => {
 
 sessionAPI.put("/:id", (req : Request, res : Response) => {
     try {
-        const data = req.body as ISession;
-        handler.update(data);
+        const data = req.body as Partial<ISession>;
+        const id = req.params.id;
+        assert(data.totalSteps && data.current );
+        handler.update(id, data.totalSteps!, data.current!);
         const response : IResponse = {
             message : 'Success! Session updated!',
             status : 200,

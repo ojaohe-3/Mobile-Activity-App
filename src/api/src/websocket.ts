@@ -39,7 +39,7 @@ export class WebSocketHandler{
       console.log(new Date().toISOString(), "connection established")
       this._eventHandler.run("connected")
       ws.on("message", async (data) => {
-        console.log(new Date().toISOString(), data)
+        console.log(new Date().toISOString() ,"socket recived data")
         this._eventHandler.run("message")
         await this.handelIncoming(data as string, req, ws);
       })
@@ -75,7 +75,7 @@ export class WebSocketHandler{
       switch (type) {
         case SessionTypes.JoinSession:
           session.addprofile(user);
-          this._eventHandler.run('joined');
+          this._eventHandler.run('user:joined');
           
           session.updateEvent((update : SessionUpdate) => {
             const send : ITrasmitFormat = {
@@ -91,14 +91,21 @@ export class WebSocketHandler{
               assert(parsed.data)
               this._eventHandler.run('update');
               const data = parsed.data!
-              session.update(data.nStep, data.nPos)
+              SessionController.Instance.update(parsed.id, data.nStep, data.nPos);
               break;
-          case SessionTypes.CreateSession:
+          case SessionTypes.CreateSession: //this will more likley be used through api
             assert(parsed.session)
-            SessionController.Instance.setSession(createSession(parsed.session!))
+            this._eventHandler.run('create');
+            SessionController.Instance.addSession(createSession(parsed.session!))
             break;
-          // case SessionTypes.LeaveSession:
-          //   SessionController.Instance.removeUser(parsed.id, parsed.user.id)
+          case SessionTypes.LeaveSession:
+            this._eventHandler.run('user:leave');
+            SessionController.Instance.removeUser(parsed.id, parsed.user._id)
+            break;
+          case SessionTypes.JoinSession: // this indicate user are active to session
+            this._eventHandler.run('user:join');
+            const active = await SessionController.Instance.getSession(parsed.id)
+            active.addprofile(createProfile(parsed.user));
         }
       }catch (error) {
       console.log(error)

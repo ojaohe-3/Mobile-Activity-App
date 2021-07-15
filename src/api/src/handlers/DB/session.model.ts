@@ -3,6 +3,7 @@ import { GeoCoordinates, GeoCoordinatesBound } from "../../models/geoCoordinates
 
 interface ISessionDocument extends Document {
   exist(): any;
+  _id: string;
   orgId: string;
   name: string;
   start: GeoCoordinates;
@@ -15,6 +16,7 @@ interface ISessionDocument extends Document {
 }
 
 const sessionScheme = new Schema({
+  _id: { type: Schema.Types.ObjectId, required: true},
   orgId: { type: Schema.Types.ObjectId, require: true },
   name: { type: Schema.Types.String, require: true },
   start: { type: Object, require: true },

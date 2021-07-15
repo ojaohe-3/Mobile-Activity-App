@@ -1,5 +1,6 @@
 //todo add socket and querring
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:dio/dio.dart';
@@ -14,7 +15,7 @@ enum Endpoints {
 }
 
 class WebSocketsController extends Subject {
-  static WebSocketsController instance = new WebSocketsController();
+  static WebSocketsController instance = WebSocketsController();
   var reconnectScheduled = false;
   bool connected = false;
   late WebSocketChannel channel;
@@ -43,7 +44,7 @@ class WebSocketsController extends Subject {
 
     Future<void> setupSockets() async {
       await initWebSocket();
-      channel.stream.listen((m) => this.run(m));
+      channel.stream.listen((m) => this.run({'body': json.decode(m), 'type':'websocket'}));
     }
 
     void sendMessage(String message){

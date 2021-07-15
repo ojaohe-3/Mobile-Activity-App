@@ -8,6 +8,7 @@ import 'package:mobileactivity/DataClasses/PlayState.dart';
 import 'package:mobileactivity/DataClasses/Profile.dart';
 import 'package:mobileactivity/modules/bluetooth.module.dart';
 import 'package:mobileactivity/modules/networking.monule.dart';
+import 'package:mobileactivity/modules/utilities.module.dart';
 import 'package:mobileactivity/widgets/Header.dart';
 
 class GMap extends StatefulWidget {
@@ -22,7 +23,6 @@ class _GMapState extends State<GMap> implements Observer {
   late CameraTargetBounds _initBound;
   late GoogleMapController _googleMapController;
 
-
   Marker? _start;
   Marker? _end;
   Marker? _current;
@@ -31,14 +31,12 @@ class _GMapState extends State<GMap> implements Observer {
   @override
   void initState() {
     //todo ask premission from the user if we need to setup device, then if
-    // BluetoothModule.instance.init();
-    // BluetoothModule.instance.add(this);
+    BluetoothModule.instance.add(this);
+    BluetoothModule.instance.init();
     WebSocketsController.instance.add(this);
-    //todo at bluetooth event,
+
     super.initState();
   }
-
-
 
   @override
   void dispose() {
@@ -107,9 +105,31 @@ class _GMapState extends State<GMap> implements Observer {
 
   @override
   void update(args) {
-    if(args != "close"){
-
+    if (args != "close") {
+      switch (args['type']) {
+        case 'bluetooth':
+          this._state.totalSteps += args['steps'] as int;
+          this._state.current = Util.translateNewPoint(_state.path,
+              _state.current, Util.stepToDistance(_state.totalSteps));
+          WebSocketsController.instance.sendMessage(json.encode({
+            "type": "UpdateSession",
+            "id": _state.id,
+            "data": {
+              "nStep": _state.totalSteps,
+              "nPos": _state.current.toJson()
+            },
+            "user": Profile.local.toJson(),
+          }));
+          break;
+        case 'websocket':
+          var raw = args['body']['data'];
+          var user = Profile.fromJson(args['body']['user']);
+          if (user.id != Profile.local.id) {
+            this._state.current = raw['nPos'];
+            this._state.totalSteps = raw['nStep'];
+          }
+          break;
+      }
     }
   }
 }
-

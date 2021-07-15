@@ -1,7 +1,5 @@
-import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:mobileactivity/DataClasses/PlayState.dart';
 import 'package:mobileactivity/DataClasses/org.dart';
 import 'package:mobileactivity/modules/filesystem.module.dart';
@@ -152,20 +150,22 @@ class _StateSetupState extends State<StateSetup> {
                           start: _mapData!.start,
                           end: _mapData!.end,
                           path: _mapData!.polyLine,
-                          id: uuid.v4(), //todo utilize the api id
+                          id: uuid.v4(), //placeholder
                           title: _titleText.text.toString(),
                           totalSteps: 0,
                           current: _mapData!.start,
                           bounds: Util.generateBounds(
                               _mapData!.start, _mapData!.end, 0.2),
                           distance: _mapData!.distance,
-                          org: _org!);
+                          orgId: _org!.id);
 
+
+                      var raw = await ApiCalls.postAppAPI('session',
+                          state);
+                      state.id = raw['data']['_id']; //this assigns the correct id
                       FileModule.writeDataToFile(
                           "local_state_last.json", state);
-                      FileModule.appendDataToFile("local_state.json", state.toJson());
-                      ApiCalls.postAppAPI('session',
-                          state); //todo translate this into a format that the api can use
+                      // FileModule.appendDataToFile("local_state.json", state.toJson()); //caching todo
                       Navigator.of(context).pop(state);
                     }
                   : null,

@@ -1,9 +1,6 @@
 import 'dart:math';
 
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:mobileactivity/DataClasses/DatasSate.dart';
-import 'package:mobileactivity/DataClasses/PlayState.dart';
-import 'package:mobileactivity/DataClasses/Profile.dart';
 
 class Util{
 
@@ -50,7 +47,7 @@ class Util{
       var p1 = path[i-1];
       var p2 = path[i];
       if(Util.isBetween(p1, p2, current)){
-        var vec = LatLng(p2.latitude - p1.latitude, p2.longitude - p2.longitude);
+        var vec = LatLng(p2.latitude - p1.latitude, p2.longitude - p1.longitude);
 
         var dd = Util.distancePoints(p1, p2);
         var f = (distance - d) / dd;
