@@ -63,7 +63,7 @@ export default class SessionController {
       await MongoDBConnector.Models.Session.create(unloaded);
       this._existingSession.push(session._id);
     }else
-        await MongoDBConnector.instance.update(session._id, session as ISession, MongoModels.SESSION);
+        await MongoDBConnector.instance.update(session._id, {...session}, MongoModels.SESSION);
     
 
     this._sessions.set(session._id, session);
