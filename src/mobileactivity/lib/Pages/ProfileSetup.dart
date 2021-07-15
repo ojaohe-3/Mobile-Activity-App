@@ -50,7 +50,11 @@ class _ProfileSetupState extends State<ProfileSetup> {
             child: TextField(
               controller: _nameInput,
               decoration: InputDecoration(hintText: _profile.name),
+              onChanged: (text){
+                setState(() {
 
+                });
+              },
             ),
           ),
           Card(
@@ -77,10 +81,10 @@ class _ProfileSetupState extends State<ProfileSetup> {
       ),
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.add_box),
-        onPressed: () {
+        onPressed: _nameInput.text.isNotEmpty ? () {
           Profile.local.update(oid: _profile.oid, name: _nameInput.text);
           Navigator.pop(context, _profile);
-        },
+        } : null,
       ),
     );
   }

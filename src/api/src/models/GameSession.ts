@@ -4,8 +4,8 @@ import Organization from "./Organization"
 import Profile, { IProfile } from "./Profile"
 
 export interface ISession {
-    readonly org : Organization
-    readonly id: string
+    readonly orgId : string
+    _id: string
     readonly name : string
     readonly start : GeoCoordinates
     readonly end : GeoCoordinates
@@ -23,8 +23,8 @@ export interface SessionUpdate{
 export function createSession(  
     session: ISession): GameSession{
         return new GameSession(
-            session.org, 
-            session.id, 
+            session.orgId, 
+            session._id, 
             session.name,
             session.start, 
             session.end,
@@ -38,8 +38,8 @@ export function createSession(
 
 export default class GameSession implements ISession{
 
-    org : Organization
-    id: string
+    orgId : string
+    _id: string
     name : string
     start : GeoCoordinates
     end : GeoCoordinates
@@ -52,7 +52,7 @@ export default class GameSession implements ISession{
     private _members : Array<Profile>
 
   constructor(
-    _org: Organization, 
+    _org: string, 
     _id: string, 
     _name: string, 
     _start: GeoCoordinates, 
@@ -64,8 +64,8 @@ export default class GameSession implements ISession{
     _distance: string
     
 ) {
-    this.org = _org
-    this.id = _id
+    this.orgId = _org
+    this._id = _id
     this.name = _name
     this.start = _start
     this.end = _end
@@ -94,6 +94,9 @@ export default class GameSession implements ISession{
       this.totalSteps += delta_steps;
       this.current = npos;
       this._eventHandler.run('update', { nStep : this.totalSteps, nPos :this.current} as SessionUpdate);
+  }
+  public removeUser(uid: string) {
+    this._members = this._members.filter((p) => p._id !== uid);
   }
 
 }

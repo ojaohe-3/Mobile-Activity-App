@@ -55,8 +55,23 @@ class _HomeState extends State<Home> {
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
               TextButton(
-                onPressed: () async {
-                  await Navigator.pushNamed(context, '/setup');
+                onPressed: () {
+                  Navigator.pushNamed(context, '/room/select');
+                },
+                style: TextButton.styleFrom(
+                    textStyle: const TextStyle(fontSize: 20)
+                ),
+                child: const Text('Select Session'),
+              ),
+            ],
+          ),
+          SizedBox(height: 50,),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              TextButton(
+                onPressed: () {
+                  Navigator.pushNamed(context, '/setup');
                 },
                 style: TextButton.styleFrom(
                     textStyle: const TextStyle(fontSize: 20)

@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:mobileactivity/DataClasses/PlayState.dart';
 import 'package:mobileactivity/modules/networking.monule.dart';
 import 'package:mobileactivity/widgets/Header.dart';
 
@@ -12,12 +13,20 @@ class SelectState extends StatefulWidget {
 }
 
 class _SelectStateState extends State<SelectState> {
-  List<dynamic> _sessions = List.empty();
+  List<dynamic> _sessions = List.empty(growable: true);
   @override
-  Future<void> initState() async {
-    _sessions = await ApiCalls.getAppAPI(endpoint: 'session/');
+  void initState() {
+    getItems();
     super.initState();
   }
+
+  Future<void> getItems() async {
+    _sessions = await ApiCalls.getAppAPI(endpoint: 'session/');
+    setState(() {
+
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -32,14 +41,15 @@ class _SelectStateState extends State<SelectState> {
       body: ListView.builder(
           itemCount: _sessions.length,
           itemBuilder: (context, i){
-            var rng = Random();
             return Card(
               child: ListTile(
                 onTap: (){
-
+                  PlayState _state = PlayState.fromJson(_sessions[i]);
+                  Navigator.of(context).pushNamed('/map', arguments:  _state);
                 },
                 leading: CircleAvatar(
-                  backgroundColor: Color.fromRGBO(rng.nextInt(255), rng.nextInt(255), rng.nextInt(255), 0.8),
+                  backgroundColor: Colors.blue,
+                  radius: 15,
                 ),
               ),
             );

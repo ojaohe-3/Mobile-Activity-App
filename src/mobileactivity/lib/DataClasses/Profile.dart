@@ -32,7 +32,7 @@ class Profile {
     if (oid != null) {
       this.oid = oid;
       await ApiCalls.putAppAPI("profile/${this.id}/", this.toJson());
-      await ApiCalls.postAppAPI("organization/${this.oid}/members", this.toJson());
+      await ApiCalls.postAppAPI("organization/${this.oid}/member", this.toJson());
     }
     FileModule.writeDataToFile('profile_local.json', this.toJson());
   }
