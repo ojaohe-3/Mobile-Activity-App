@@ -46,7 +46,7 @@ class _StateDisplayState extends State<StateDisplay> {
             elevation: 2,
             color: Colors.black,
             child: SizedBox(
-              height: 300,
+              height: 500,
               child: GoogleMap(
                 myLocationButtonEnabled: false,
                 zoomControlsEnabled: false,

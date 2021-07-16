@@ -18,6 +18,8 @@ class BluetoothModule extends Subject{
     //todo start reading from device... provided it already is connected
   }
   void process(dynamic data){
+    print("step:");
+    print(data);
     run(data);
     //todo concurrently run onto devices
   }

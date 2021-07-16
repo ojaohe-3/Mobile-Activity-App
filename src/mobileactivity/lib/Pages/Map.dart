@@ -10,6 +10,7 @@ import 'package:mobileactivity/modules/bluetooth.module.dart';
 import 'package:mobileactivity/modules/networking.monule.dart';
 import 'package:mobileactivity/modules/utilities.module.dart';
 import 'package:mobileactivity/widgets/Header.dart';
+import 'package:mobileactivity/widgets/ProgressWidged.dart';
 
 class GMap extends StatefulWidget {
   const GMap({Key? key}) : super(key: key);
@@ -34,7 +35,7 @@ class _GMapState extends State<GMap> implements Observer {
     BluetoothModule.instance.add(this);
     BluetoothModule.instance.init();
     WebSocketsController.instance.add(this);
-
+    WebSocketsController.instance.initWebSocket();
     super.initState();
   }
 
@@ -46,7 +47,7 @@ class _GMapState extends State<GMap> implements Observer {
   }
 
   Future<void> setProfiles(String id) async {
-    this.profiles = await ApiCalls.getAppAPI(endpoint: 'session/$id/members/');
+    this.profiles = await ApiCalls.getAppAPI(endpoint: 'session/$id/member/');
   }
 
   @override
@@ -67,6 +68,9 @@ class _GMapState extends State<GMap> implements Observer {
           backgroundColor: Colors.white70,
         ),
         body: Stack(children: [
+          SizedBox(
+            child: ProgressWidget(state: this._state),
+          ),
           GoogleMap(
             myLocationButtonEnabled: false,
             zoomControlsEnabled: false,
@@ -121,6 +125,7 @@ class _GMapState extends State<GMap> implements Observer {
             },
             "user": Profile.local.toJson(),
           }));
+
           break;
         case 'websocket':
           var raw = args['body']['data'];
@@ -132,5 +137,6 @@ class _GMapState extends State<GMap> implements Observer {
           break;
       }
     }
+
   }
 }
