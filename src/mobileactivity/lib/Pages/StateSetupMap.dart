@@ -71,7 +71,6 @@ class _StateSetupMapState extends State<StateSetupMap> {
           _start!.position, _end!.position);
 
       route = route['routes'][0];
-      print(route);
       PolylinePoints polylinePoints = PolylinePoints();
       distance = route['distance'];
 

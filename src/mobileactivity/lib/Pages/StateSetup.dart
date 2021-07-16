@@ -138,6 +138,7 @@ class _StateSetupState extends State<StateSetup> {
           ElevatedButton(
               onPressed: (this._mapData != null && this._org != null)
                   ? () async {
+                  print(" ==================== GENERATE STATE ====================");
                       var state = PlayState(
                           start: _mapData!.start,
                           end: _mapData!.end,
@@ -149,6 +150,7 @@ class _StateSetupState extends State<StateSetup> {
                           bounds: Util.generateBounds(
                               _mapData!.start, _mapData!.end, 0.2),
                           distance: _mapData!.distance,
+                          name: _titleText.text,
                           orgId: _org!.id);
 
 
@@ -157,7 +159,7 @@ class _StateSetupState extends State<StateSetup> {
                       state.id = raw['data']['_id']; //this assigns the correct id
                       print(state.id);
                       FileModule.writeDataToFile(
-                          "local_state.json", state);
+                          "local_state.json", state.toJson());
                       // FileModule.appendDataToFile("local_state.json", state.toJson()); //caching todo
                       Navigator.of(context).pop(state);
                     }
