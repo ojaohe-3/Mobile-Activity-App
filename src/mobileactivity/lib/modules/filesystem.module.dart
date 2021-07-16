@@ -3,13 +3,13 @@ import 'dart:io';
 import 'package:path_provider/path_provider.dart';
 
 class FileModule{
-  static void writeDataToFile(String fn, dynamic data) async{
+  static void writeDataToFile(String fn, Map<String, dynamic> data) async{
     Directory appDir = await getApplicationDocumentsDirectory();
     var dir = appDir.path;
     File file = File('$dir/$fn');
     bool exist = await file.exists();
     if(!exist) await file.create();
-    file.writeAsString(data);
+    file.writeAsString(json.encode(data));
 
   }
 
@@ -20,7 +20,7 @@ class FileModule{
     return await file.exists();
   }
 
-  static void appendDataToFile(String fn, dynamic data) async{
+  static void appendDataToFile(String fn, Map<String, dynamic> data) async{
     Directory appDir = await getApplicationDocumentsDirectory();
     var dir = appDir.path;
     File file = File('$dir/$fn');

@@ -144,20 +144,18 @@ class _StateSetupState extends State<StateSetup> {
                           end: _mapData!.end,
                           path: _mapData!.polyLine,
                           id: uuid.v4(), //placeholder
-                          title: _titleText.text.toString(),
                           totalSteps: 0,
                           current: _mapData!.start,
                           bounds: Util.generateBounds(
                               _mapData!.start, _mapData!.end, 0.2),
                           distance: _mapData!.distance,
-                          name: _titleText.text,
+                          name: _titleText.text.toString(),
                           orgId: _org!.id);
 
-
                       var raw = await ApiCalls.postAppAPI('session',
-                          state);
+                          state.toJson());
                       state.id = raw['data']['_id']; //this assigns the correct id
-                      print(state.id);
+
                       FileModule.writeDataToFile(
                           "local_state.json", state.toJson());
                       // FileModule.appendDataToFile("local_state.json", state.toJson()); //caching todo

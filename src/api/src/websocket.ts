@@ -71,7 +71,7 @@ export class WebSocketHandler{
       this._clients.set(parsed.id, ws);
       
       const type : SessionTypes = SessionTypes[parsed.type as keyof typeof SessionTypes]
-      
+      console.log(data)
       switch (type) {
         case SessionTypes.JoinSession:
           session.addprofile(user);

@@ -41,6 +41,7 @@ class _GMapState extends State<GMap> implements Observer {
   @override
   void dispose() {
     this._googleMapController.dispose();
+    WebSocketsController.instance.closeConnection();
     super.dispose();
   }
 

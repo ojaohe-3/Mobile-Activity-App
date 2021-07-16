@@ -77,7 +77,7 @@ class _StateDisplayState extends State<StateDisplay> {
                 padding: const EdgeInsets.all(10.0),
                 child: SizedBox(
                   width: 150,
-                    child: Text('Title: ${_state.title}',
+                    child: Text('Title: ${_state.name}',
                         maxLines: 4,
                         softWrap: false,
                         overflow: TextOverflow.ellipsis,

@@ -43,9 +43,13 @@ class _SelectStateState extends State<SelectState> {
           itemBuilder: (context, i){
             return Card(
               child: ListTile(
+                title: Text(_sessions[i]['name']),
                 onTap: (){
+                  print("convert to state");
+                  _sessions[i].forEach((k, v) => print('$k:$v'));
                   PlayState _state = PlayState.fromJson(_sessions[i]);
-                  Navigator.of(context).pushNamed('/map', arguments:  _state);
+                  print(_state);
+                  Navigator.of(context).pushNamed('/setup/state', arguments:  _state);
                 },
                 leading: CircleAvatar(
                   backgroundColor: Colors.blue,

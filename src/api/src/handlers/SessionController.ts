@@ -58,7 +58,7 @@ export default class SessionController {
   }
 
   public async addSession(session: GameSession) {
-    console.log("Session Controller: ", session.orgId)
+    console.log("Session Controller: ", session)
     await MongoDBConnector.Models.Session.create({...session});
     this._existingSession.push(session._id);
     this._sessions.set(session._id, session);

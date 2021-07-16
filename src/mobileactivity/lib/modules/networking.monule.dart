@@ -50,6 +50,9 @@ class WebSocketsController extends Subject {
     void sendMessage(String message){
       channel.sink.add(message);
     }
+    void closeConnection(){
+      channel.sink.close();
+    }
 }
 
 class ApiCalls {
