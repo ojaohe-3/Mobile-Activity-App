@@ -155,8 +155,9 @@ class _StateSetupState extends State<StateSetup> {
                       var raw = await ApiCalls.postAppAPI('session',
                           state);
                       state.id = raw['data']['_id']; //this assigns the correct id
+                      print(state.id);
                       FileModule.writeDataToFile(
-                          "local_state_last.json", state);
+                          "local_state.json", state);
                       // FileModule.appendDataToFile("local_state.json", state.toJson()); //caching todo
                       Navigator.of(context).pop(state);
                     }

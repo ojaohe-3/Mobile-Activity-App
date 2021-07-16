@@ -46,10 +46,8 @@ sessionAPI.get("/", async (req : Request, res : Response) => {
 
 sessionAPI.post("/", (req : Request, res : Response) => {
     try {
-        console.log(req.body);
         const data = req.body as Omit<ISession, "_id" >;
         const id = mongoose.Types.ObjectId();
-        console.log(data);
         const raw : ISession = {
             ...data,
             _id: id.toString(),
