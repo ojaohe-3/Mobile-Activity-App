@@ -20,6 +20,10 @@ interface ITrasmitFormat{
   user: IProfile,
 
 }
+interface WebsocketObject{
+  ws: WebSocket,
+  addr: string,
+}
 
 export enum SessionTypes{
   UpdateSession, JoinSession, LeaveSession, CreateSession
@@ -28,10 +32,10 @@ export enum SessionTypes{
 export class WebSocketHandler{
   private _wss : WebSocket.Server
   private _eventHandler : EventHandler
-  private _clients: Map<string, WebSocket>
+  private _clients: Map<string, WebsocketObject[]> //TODO tuple 
 
   constructor(server : Server){
-    this._clients = new Map<string, WebSocket>();
+    this._clients = new Map<string, WebsocketObject[]>();
     this._wss = new WebSocket.Server({ server })
     this._eventHandler = new EventHandler()
     //TODO heartbeat
@@ -41,7 +45,7 @@ export class WebSocketHandler{
       ws.on("message", async (data) => {
         console.log(new Date().toISOString() ,"socket recived data")
         this._eventHandler.run("message")
-        await this.handelIncoming(data as string, req, ws);
+        await this.handelIncoming(data as string, ws, req);
       })
     
       ws.on("close", () => {
@@ -54,24 +58,36 @@ export class WebSocketHandler{
   }
 
   private handelClosuer(req: IncomingMessage) {
-    //1. inform session that a user have closed.
-    //2. inform UserSessions a session is closed
-    //3. inform all clients, tho not strictly nessecary
+    const addr = req.socket.remoteAddress!.toString();
+    let key = "";
+    this._clients.forEach((v, k) =>{
+      if(v.filter(e => e.addr == addr).length > 0)
+        key = k
+    })
+    const new_clients = this._clients.get(key)?.filter(e => e.addr !== addr)
+    if(new_clients)
+      this._clients.set(key!, new_clients) 
     }
   
 
 
-  private async handelIncoming(data: string, req: IncomingMessage, ws: WebSocket) : Promise<void>{
+  private async handelIncoming(data: string, ws: WebSocket, req: IncomingMessage) : Promise<void>{
     try {
+      console.log(data)
       const parsed = JSON.parse(data) as IReciveFormat;
       const user = createProfile(parsed.user)
       UserSessions.Instance.addUser(user); //TODO user heartbeat update
       const session = await SessionController.Instance.getSession(parsed.id);
-      
-      this._clients.set(parsed.id, ws);
+      const wsObject = {ws: ws, addr: req.socket.remoteAddress!.toString()}; //This might be shit
+      if(!this._clients.has(parsed.id))
+        this._clients.set(parsed.id, [wsObject]);
+      else{
+        const clients = this._clients.get(parsed.id)
+        clients!.push(wsObject)
+        this._clients.set(parsed.id, clients!);
+      }
       
       const type : SessionTypes = SessionTypes[parsed.type as keyof typeof SessionTypes]
-      console.log(data)
       switch (type) {
         case SessionTypes.JoinSession:
           session.addprofile(user);
@@ -82,7 +98,8 @@ export class WebSocketHandler{
               data:  update,
               user: user
             }
-            this._clients.forEach(ws => ws.send(send));
+            console.log("sending message",)
+            this._clients.get(update.id)?.forEach(ws => ws.ws.send(send));
             
           })
           // TODO inform clients that this user is currently active    

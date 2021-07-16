@@ -11,6 +11,7 @@ const handler = SessionController.Instance;
 sessionAPI.get("/:id", async (req : Request, res : Response) => {
     try {
         const id = req.params.id;
+        console.log(id);
         const item = await handler.getSession(id);
         res.json(item);
     } catch (error) {
@@ -52,12 +53,14 @@ sessionAPI.post("/", (req : Request, res : Response) => {
             ...data,
             _id: id.toString(),
         }
+        console.log(raw.orgId)
         handler.addSession(createSession(raw));
         const response : IResponse = {
             message : 'Success! Session created!',
             status : 200,
             data : raw,
         }
+        
         res.json(response)
     } catch (error) {
         console.log("error occured!")

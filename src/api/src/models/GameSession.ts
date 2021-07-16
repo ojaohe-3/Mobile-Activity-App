@@ -16,6 +16,7 @@ export interface ISession {
     readonly distance: number
 }
 export interface SessionUpdate{
+    id: string,
     nStep: number,
     nPos: GeoCoordinates
   }
@@ -93,7 +94,7 @@ export default class GameSession implements ISession{
   public update(delta_steps: number, npos: GeoCoordinates){
       this.totalSteps += delta_steps;
       this.current = npos;
-      this._eventHandler.run('update', { nStep : this.totalSteps, nPos :this.current} as SessionUpdate);
+      this._eventHandler.run('update', { nStep : this.totalSteps, nPos :this.current, id: this._id} as SessionUpdate);
   }
   public removeUser(uid: string) {
     this._members = this._members.filter((p) => p._id !== uid);
