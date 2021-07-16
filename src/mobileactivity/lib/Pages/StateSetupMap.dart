@@ -36,7 +36,7 @@ class _StateSetupMapState extends State<StateSetupMap> {
   Marker? _start;
   Marker? _end;
   List<LatLng>? polyLine;
-  String distance = "0";
+  double distance = 0;
   //todo add support for multiple markers
 
   final CameraPosition _initPos = CameraPosition(
@@ -70,6 +70,7 @@ class _StateSetupMapState extends State<StateSetupMap> {
       dynamic route = await ApiCalls.getDirectionApi(
           _start!.position, _end!.position);
 
+      route = route['routes'][0];
       print(route);
       PolylinePoints polylinePoints = PolylinePoints();
       distance = route['distance'];

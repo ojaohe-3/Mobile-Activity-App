@@ -13,7 +13,7 @@ export interface ISession {
     readonly bounds : GeoCoordinatesBound
     current: GeoCoordinates
     totalSteps: number
-    readonly distance: string
+    readonly distance: number
 }
 export interface SessionUpdate{
     nStep: number,
@@ -47,7 +47,7 @@ export default class GameSession implements ISession{
     bounds : GeoCoordinatesBound
     current: GeoCoordinates
     totalSteps: number
-    distance: string
+    distance: number
     private _eventHandler : EventHandler
     private _members : Array<Profile>
 
@@ -61,7 +61,7 @@ export default class GameSession implements ISession{
     _bounds: GeoCoordinatesBound, 
     _current: GeoCoordinates, 
     _totalSteps: number,
-    _distance: string
+    _distance: number
     
 ) {
     this.orgId = _org

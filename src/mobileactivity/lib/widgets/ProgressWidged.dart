@@ -31,8 +31,7 @@ class _ProgressWidgetState extends State<ProgressWidget> {
 
   double distanceRemaining() {
     var dist = Util.stepToDistance(_state.totalSteps);
-    var total_dist = double.parse(_state.distance);
-    return dist/total_dist;
+    return dist/_state.distance;
   }
 }
 //todo this progress bar, will span its entire tile/container and will draw a progress bar based on state.

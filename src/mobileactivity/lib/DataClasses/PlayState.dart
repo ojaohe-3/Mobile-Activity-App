@@ -11,7 +11,7 @@ class PlayState {
   final List<LatLng> path;
   final LatLngBounds bounds;
 
-  final String distance;
+  final double distance;
   final String orgId;
   PlayState(
       {required this.start,
@@ -62,7 +62,7 @@ class PointSelection {
   final LatLng start;
   final LatLng end;
   final List<LatLng> polyLine;
-  final String distance;
+  final double distance;
 
   PointSelection(this.start, this.end, this.polyLine, this.distance);
 }
