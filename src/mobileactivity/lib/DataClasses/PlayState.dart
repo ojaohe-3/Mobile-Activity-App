@@ -10,12 +10,13 @@ class PlayState {
   final String title;
   final List<LatLng> path;
   final LatLngBounds bounds;
-
+  final String name;
   final double distance;
   final String orgId;
   PlayState(
       {required this.start,
       required this.end,
+      required this.name,
       required this.path,
       required this.id,
       required this.title,
@@ -30,6 +31,7 @@ class PlayState {
         '_id': this.id,
         'title': this.title,
         'start': this.start.toJson(),
+        'name' : this.name,
         'end': this.start.toJson(),
         'current': this.current.toJson(),
         'totalSteps': this.totalSteps,
@@ -47,6 +49,7 @@ class PlayState {
           end: LatLng.fromJson(json['end'])!,
           path: parsePathJson(json['path']),
           id: json['_id'],
+          name: json['name'],
           title: json['title'],
           totalSteps: json['totalSteps'],
           current: LatLng.fromJson(json['current'])!,
