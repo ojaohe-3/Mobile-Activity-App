@@ -16,27 +16,17 @@ enum Endpoints {
 
 class WebSocketsController extends Subject {
   static WebSocketsController instance = WebSocketsController();
-  var reconnectScheduled = false;
   bool connected = false;
   late WebSocketChannel channel;
 
 
-  Future<void> initWebSocket([int retrySeconds = 2]) async {
-    reconnectScheduled = false;
-
+  Future<void> initWebSocket() async {
     await dotenv.load(fileName: 'lib/.env');
     String? uri = dotenv.env['WS_ENDPOINT'];
     if (uri == null )throw Exception("could not establish connection!, not a valid url provided in .env WS_ENDPOINT?");
     channel = WebSocketChannel.connect(Uri.parse(uri));
   }
 
-  void scheduleReconnect([int retrySeconds = 2]) {
-    if (!reconnectScheduled) {
-      new Timer(new Duration(milliseconds: 1000 * retrySeconds),
-              () => initWebSocket(retrySeconds * 2));
-    }
-    reconnectScheduled = true;
-  }
 
   WebSocketsController(){
       this.setupSockets();
@@ -48,10 +38,14 @@ class WebSocketsController extends Subject {
     }
 
     void sendMessage(String message){
+      if(this.connected)
       channel.sink.add(message);
+      else
+        initWebSocket();
     }
     void closeConnection(){
       channel.sink.close();
+      this.connected = false;
     }
 }
 

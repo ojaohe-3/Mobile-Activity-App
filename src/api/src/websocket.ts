@@ -58,7 +58,7 @@ export class WebSocketHandler{
   }
 
   private handelClosuer(req: IncomingMessage) {
-    const addr = req.socket.remoteAddress!.toString();
+    const addr = req.socket.remoteAddress!;
     let key = "";
     this._clients.forEach((v, k) =>{
       if(v.filter(e => e.addr == addr).length > 0)
@@ -78,7 +78,7 @@ export class WebSocketHandler{
       const user = createProfile(parsed.user)
       UserSessions.Instance.addUser(user); //TODO user heartbeat update
       const session = await SessionController.Instance.getSession(parsed.id);
-      const wsObject = {ws: ws, addr: req.socket.remoteAddress!.toString()}; //This might be shit
+      const wsObject = {ws: ws, addr: req.socket.remoteAddress!}; //This might be shit
       if(!this._clients.has(parsed.id))
         this._clients.set(parsed.id, [wsObject]);
       else{
