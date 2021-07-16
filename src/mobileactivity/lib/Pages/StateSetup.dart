@@ -47,15 +47,7 @@ class _StateSetupState extends State<StateSetup> {
     super.dispose();
   }
 
-  Future<List<String>> createOrgList() async {
-    var data =
-        await ApiCalls.getAppAPI(endpoint: 'organizations/') as List<dynamic>;
-    List<String> res = List.empty();
-    for (var item in data) {
-      res.add(item['id']);
-    }
-    return res;
-  }
+
 
   @override
   Widget build(BuildContext context) {

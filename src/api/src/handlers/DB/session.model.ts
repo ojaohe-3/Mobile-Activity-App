@@ -12,7 +12,7 @@ interface ISessionDocument extends Document {
   bounds: GeoCoordinatesBound;
   current: GeoCoordinates;
   totalSteps: number;
-  distance: string;
+  distance: number;
 }
 
 const sessionScheme = new Schema({
@@ -25,7 +25,7 @@ const sessionScheme = new Schema({
   bounds: { type: Object, require: true },
   current: { type: Object, require: true },
   totalSteps: { type: Schema.Types.Number, require: true },
-  distance: { type: Schema.Types.String, require: true },
+  distance: { type: Schema.Types.Number, require: true },
 });
 
 sessionScheme.static("query", async function (query: Object) {
