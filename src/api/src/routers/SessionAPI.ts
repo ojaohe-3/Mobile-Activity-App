@@ -23,7 +23,7 @@ sessionAPI.get("/:id", async (req : Request, res : Response) => {
         res.status(404).json(response)
     }
 });
-sessionAPI.get("/members/:id/", async (req : Request, res : Response) => {
+sessionAPI.get("/:id/member/", async (req : Request, res : Response) => {
     try {
         const id = req.params.id;
         const item = await handler.getSession(id);
@@ -46,8 +46,10 @@ sessionAPI.get("/", async (req : Request, res : Response) => {
 
 sessionAPI.post("/", (req : Request, res : Response) => {
     try {
+        console.log(req.body);
         const data = req.body as Omit<ISession, "_id" >;
         const id = mongoose.Types.ObjectId();
+        console.log(data);
         const raw : ISession = {
             ...data,
             _id: id.toString(),
