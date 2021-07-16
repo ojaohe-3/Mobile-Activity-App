@@ -22,6 +22,8 @@ class _ProgressWidgetState extends State<ProgressWidget> {
     return Container(
       child: SizedBox(child: LinearProgressIndicator(
         value: distanceRemaining(),
+        minHeight: 40,
+        backgroundColor: Colors.grey[300],
         valueColor: AlwaysStoppedAnimation<Color>(
           Colors.green
         ),

@@ -7,7 +7,6 @@ class PlayState {
   LatLng current;
   int totalSteps;
   String id;
-  final String title;
   final List<LatLng> path;
   final LatLngBounds bounds;
   final String name;
@@ -19,7 +18,6 @@ class PlayState {
       required this.name,
       required this.path,
       required this.id,
-      required this.title,
       required this.totalSteps,
       required this.current,
       required this.bounds,
@@ -29,8 +27,7 @@ class PlayState {
   // factory PlayState.fromJson(Map<String, dynamic> json) :
   Map<String, dynamic> toJson() => {
         '_id': this.id,
-        'title': this.title,
-        'start': this.start.toJson(),
+         'start': this.start.toJson(),
         'name' : this.name,
         'end': this.start.toJson(),
         'current': this.current.toJson(),
@@ -48,9 +45,8 @@ class PlayState {
           start: LatLng.fromJson(json['start'])!,
           end: LatLng.fromJson(json['end'])!,
           path: parsePathJson(json['path']),
-          id: json['_id'],
+          id: json['id'],
           name: json['name'],
-          title: json['title'],
           totalSteps: json['totalSteps'],
           current: LatLng.fromJson(json['current'])!,
           bounds: LatLngBounds.fromList(json['bounds'])!,
