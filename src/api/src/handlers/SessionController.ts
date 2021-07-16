@@ -58,14 +58,12 @@ export default class SessionController {
   }
 
   public async addSession(session: GameSession) {
+    
     const unloaded = await this.unloaded(session._id);
     if (!unloaded) {
-      await MongoDBConnector.Models.Session.create(unloaded);
+      await MongoDBConnector.Models.Session.create({...session});
       this._existingSession.push(session._id);
-    }else
-        await MongoDBConnector.instance.update(session._id, {...session}, MongoModels.SESSION);
-    
-
+    }
     this._sessions.set(session._id, session);
   }
 

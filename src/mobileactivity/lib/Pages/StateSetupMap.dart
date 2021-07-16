@@ -69,10 +69,10 @@ class _StateSetupMapState extends State<StateSetupMap> {
           position: pos);
       dynamic route = await ApiCalls.getDirectionApi(
           _start!.position, _end!.position);
-      route = route['routes'][0];
+
       print(route);
       PolylinePoints polylinePoints = PolylinePoints();
-      // distance = route['']
+      distance = route['distance'];
 
 
           setState(() {
