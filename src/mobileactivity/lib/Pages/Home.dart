@@ -38,7 +38,8 @@ class _HomeState extends State<Home> {
             children: [
               TextButton(
                 onPressed: () async {
-                  var state = await FileModule.loadData("local_state_last.json");
+                  var state = await FileModule.loadData("local_state_last.json") as Map<String, dynamic>;
+                  state.forEach((e, k) => print(e +': '+k));
                   if(state != null)
                     Navigator.pushNamed(context, '/setup/state', arguments: PlayState.fromJson(state));
                 },

@@ -84,7 +84,6 @@ export default class OrgHandler {
   }
 
   public async updateOrg(_id: string, data: Partial<IOrg>) {
-    console.log(data)
     const org = this._orgs.get(_id);
     if(org){
       assert(data.members)
