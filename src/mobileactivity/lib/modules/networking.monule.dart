@@ -25,6 +25,8 @@ class WebSocketsController extends Subject {
     String? uri = dotenv.env['WS_ENDPOINT'];
     if (uri == null )throw Exception("could not establish connection!, not a valid url provided in .env WS_ENDPOINT?");
     channel = WebSocketChannel.connect(Uri.parse(uri));
+    connected = true;
+
   }
 
 
@@ -38,6 +40,8 @@ class WebSocketsController extends Subject {
     }
 
     void sendMessage(String message){
+    // print("websocket sending:");
+    // print(message);
       if(this.connected)
       channel.sink.add(message);
       else
@@ -106,11 +110,11 @@ class ApiCalls {
     }
     url = url + endpoint;
     if (id != null) url = url + id;
-    print("calling $url");
+    // print("calling $url");
     try {
       final req = await Dio().get(Uri.parse(url).toString());
       if (req.statusCode == 200) {
-        print('got response: ${req.data}');
+        // print('got response: ${req.data}');
         return req.data;
       } else
         throw Exception("Request failed!");
@@ -136,7 +140,7 @@ class ApiCalls {
       else
         throw Exception("Request failed!");
     } catch (e) {
-      print(e);
+      // print(e);
       return null;
     }
   }
@@ -158,7 +162,7 @@ class ApiCalls {
       else
         throw Exception("Request failed!");
     } catch (e) {
-      print(e);
+      // print(e);
       return null;
     }
   }

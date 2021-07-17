@@ -7,7 +7,7 @@ import UserSessions from "./handlers/UserSessions"
 import { createSession, ISession, SessionUpdate } from "./models/GameSession"
 import { createProfile, IProfile } from "./models/Profile"
 
-interface IReciveFormat{
+export interface IReciveFormat{
   type: string,
   id : string,
   data?: SessionUpdate,
@@ -32,14 +32,14 @@ export enum SessionTypes{
 export class WebSocketHandler{
   private _wss : WebSocket.Server
   private _eventHandler : EventHandler
-  private _clients: Map<string, WebsocketObject[]> //TODO tuple 
+  private _clients: Map<string, WebsocketObject[]> 
 
   constructor(server : Server){
     this._clients = new Map<string, WebsocketObject[]>();
     this._wss = new WebSocket.Server({ server })
     this._eventHandler = new EventHandler()
     //TODO heartbeat
-    this._wss.on("connection", (ws : WebSocket, req) => {
+    this._wss.on("connection", (ws : WebSocket, req: IncomingMessage) => {
       console.log(new Date().toISOString(), "connection established")
       this._eventHandler.run("connected")
       ws.on("message", async (data) => {
@@ -58,6 +58,13 @@ export class WebSocketHandler{
   }
 
   private handelClosuer(req: IncomingMessage) {
+    // We map all clients to there IP, if an IP changes this will not work as intended 
+    // (it does not take dynamic ip into consideration for simplisity)
+    // When a user close the idea is to remove them from the session, we do not want to send to a session that is closed so 
+    // idealy this always remove any inactive users sessions
+    // this could also be used to inform the session, to witch cannot be known beforehand without mapping ip 
+    // because we cannot garantee input actually ever will send anything before closing and we make no guarantee of it
+
     const addr = req.socket.remoteAddress!;
     let key = "";
     this._clients.forEach((v, k) =>{
@@ -73,7 +80,7 @@ export class WebSocketHandler{
 
   private async handelIncoming(data: string, ws: WebSocket, req: IncomingMessage) : Promise<void>{
     try {
-      console.log(data)
+ 
       const parsed = JSON.parse(data) as IReciveFormat;
       const user = createProfile(parsed.user)
       UserSessions.Instance.addUser(user); //TODO user heartbeat update
@@ -91,14 +98,13 @@ export class WebSocketHandler{
       switch (type) {
         case SessionTypes.JoinSession:
           session.addprofile(user);
-          this._eventHandler.run('user:joined');
+          this._eventHandler.run('user:joined', parsed);
           
           session.updateEvent((update : SessionUpdate) => {
             const send : ITrasmitFormat = {
               data:  update,
               user: user
             }
-            console.log("sending message",)
             this._clients.get(update.id)?.forEach(ws => ws.ws.send(send));
             
           })
@@ -106,21 +112,21 @@ export class WebSocketHandler{
           break;
           case SessionTypes.UpdateSession:
               assert(parsed.data)
-              this._eventHandler.run('update');
+              this._eventHandler.run('user:update', parsed);
               const data = parsed.data!
               SessionController.Instance.update(parsed.id, data.nStep, data.nPos);
               break;
           case SessionTypes.CreateSession: //this will more likley be used through api
             assert(parsed.session)
-            this._eventHandler.run('create');
+            this._eventHandler.run('create', parsed);
             SessionController.Instance.addSession(createSession(parsed.session!))
             break;
           case SessionTypes.LeaveSession:
-            this._eventHandler.run('user:leave');
+            this._eventHandler.run('user:leave', parsed);
             SessionController.Instance.removeUser(parsed.id, parsed.user._id)
             break;
           case SessionTypes.JoinSession: // this indicate user are active to session
-            this._eventHandler.run('user:join');
+            this._eventHandler.run('user:join', parsed);
             const active = await SessionController.Instance.getSession(parsed.id)
             active.addprofile(createProfile(parsed.user));
         }

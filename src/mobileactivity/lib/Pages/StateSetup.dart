@@ -138,7 +138,7 @@ class _StateSetupState extends State<StateSetup> {
           ElevatedButton(
               onPressed: (this._mapData != null && this._org != null)
                   ? () async {
-                  print(" ==================== GENERATE STATE ====================");
+                  // print(" ==================== GENERATE STATE ====================");
                       var state = PlayState(
                           start: _mapData!.start,
                           end: _mapData!.end,
@@ -155,7 +155,8 @@ class _StateSetupState extends State<StateSetup> {
                       var raw = await ApiCalls.postAppAPI('session',
                           state.toJson());
                       state.id = raw['data']['_id']; //this assigns the correct id
-
+                      print(state.start);
+                      print(state.end);
                       FileModule.writeDataToFile(
                           "local_state.json", state.toJson());
                       // FileModule.appendDataToFile("local_state.json", state.toJson()); //caching todo
