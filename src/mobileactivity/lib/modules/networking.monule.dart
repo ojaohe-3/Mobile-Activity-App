@@ -24,9 +24,10 @@ class WebSocketsController extends Subject {
     await dotenv.load(fileName: 'lib/.env');
     String? uri = dotenv.env['WS_ENDPOINT'];
     if (uri == null )throw Exception("could not establish connection!, not a valid url provided in .env WS_ENDPOINT?");
-    channel = WebSocketChannel.connect(Uri.parse(uri));
-    connected = true;
-
+    if(!this.connected) {
+      channel = WebSocketChannel.connect(Uri.parse(uri));
+      connected = true;
+    }
   }
 
 

@@ -162,7 +162,7 @@ class EventHandler extends Observer {
           this.state.totalSteps += args['steps'] as int;
           this.state.current = Util.translateNewPoint(
               state.path, state.current, Util.stepToDistance(state.totalSteps));
-          WebSocketsController.instance.sendMessage(json.encode({
+          var data = json.encode({
             "type": "UpdateSession",
             "id": state.id,
             "data": {
@@ -171,7 +171,8 @@ class EventHandler extends Observer {
               "nPos": state.current.toJson()
             },
             "user": Profile.local.toJson(),
-          }));
+          });
+          WebSocketsController.instance.sendMessage(data);
           callback(this.state);
           break;
         case 'websocket':
