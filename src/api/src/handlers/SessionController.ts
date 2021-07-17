@@ -36,9 +36,9 @@ export default class SessionController {
 
   private async unloaded(id: string): Promise<ISession | null> {
     await this.fetchIndexes();
-    let unloaded = this._existingSession.filter((e) => e === id);
+    let unloaded = this._existingSession.filter((e) => e == id);
 
-    if (unloaded.length === 1) {
+    if (unloaded.length > 0) {
       const raw : ISessionDocument= await MongoDBConnector.instance.findOne(id, MongoModels.SESSION);
       
       const converted : ISession = {
