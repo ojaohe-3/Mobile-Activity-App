@@ -48,7 +48,6 @@ class _SelectStateState extends State<SelectState> {
                   print("convert to state");
                   _sessions[i].forEach((k, v) => print('$k:$v'));
                   PlayState _state = PlayState.fromJson(_sessions[i]);
-                  print(_state);
                   Navigator.of(context).pushNamed('/setup/state', arguments:  _state);
                 },
                 leading: CircleAvatar(

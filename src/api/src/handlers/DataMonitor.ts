@@ -25,8 +25,6 @@ export class Monitor {
   }
 
   processData(data: IReciveFormat): void {
-
-    console.log("points")
     if (data.data)
       Monitor.instance.points.push({
         sessionId: data.id,
