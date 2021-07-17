@@ -92,7 +92,7 @@ export default class GameSession implements ISession{
   
   //TODO maybe we want to calculate the new geo point by steps in this api....
   public update(delta_steps: number, npos: GeoCoordinates){
-      this.totalSteps += delta_steps;
+      this.totalSteps = delta_steps;
       this.current = npos;
       this._eventHandler.run('update', { nStep : this.totalSteps, nPos :this.current, id: this._id} as SessionUpdate);
   }

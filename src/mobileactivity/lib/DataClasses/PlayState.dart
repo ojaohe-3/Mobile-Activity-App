@@ -29,7 +29,7 @@ class PlayState {
         '_id': this.id,
          'start': this.start.toJson(),
         'name' : this.name,
-        'end': this.start.toJson(),
+        'end': this.end.toJson(),
         'current': this.current.toJson(),
         'totalSteps': this.totalSteps,
         'path': this.path.map((e) => e.toJson()).toList(),

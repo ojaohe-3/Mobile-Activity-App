@@ -30,13 +30,13 @@ export default class SessionController {
     
     const raw = await MongoDBConnector.instance.findAll(MongoModels.SESSION) as Array<ISession>;
     raw.forEach((e: any) => {
-      this._existingSession.push(e._id);
+      this._existingSession.push(e._id.toString());
     });
   }
 
   private async unloaded(id: string): Promise<ISession | null> {
     await this.fetchIndexes();
-    let unloaded = this._existingSession.filter((e) => e == id);
+    let unloaded = this._existingSession.filter((e) => e === id);
 
     if (unloaded.length === 1) {
       const raw : ISessionDocument= await MongoDBConnector.instance.findOne(id, MongoModels.SESSION);
@@ -67,12 +67,10 @@ export default class SessionController {
 
 
   public async getSession(id: string): Promise<GameSession> {
-    console.log("finding session,",id)
+
     if (this._sessions.has(id)) return this._sessions.get(id)!;
     else {
-      console.log("failed to find in loaded, looking in unloaded...")
-      const unloaded = await this.unloaded(id);
-      console.log("found: ", unloaded);
+     const unloaded = await this.unloaded(id);
       assert(unloaded);
       const data = createSession(unloaded);
       this._sessions.set(id, data);
