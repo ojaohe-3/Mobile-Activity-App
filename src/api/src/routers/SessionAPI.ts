@@ -11,7 +11,6 @@ const handler = SessionController.Instance;
 sessionAPI.get("/:id", async (req : Request, res : Response) => {
     try {
         const id = req.params.id;
-        console.log(id);
         const item = await handler.getSession(id);
         res.json(item);
     } catch (error) {

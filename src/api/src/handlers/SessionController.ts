@@ -102,11 +102,12 @@ export default class SessionController {
   public async update(id: string, steps: number, nPos: GeoCoordinates) {
   
     if(this._sessions.has(id)){
-      const session = this._sessions.get(id);
+      const session = this._sessions.get(id) ;
+      const data  = session as Omit<ISession, '_id'>;
       session!.update(steps, nPos);
       this._sessions.set(id, session!);
   
-      await MongoDBConnector.instance.update(id, {...session}, MongoModels.SESSION)
+      await MongoDBConnector.instance.update(id, {...data}, MongoModels.SESSION)
     }
     else{
       const unloaded = await this.unloaded(id);

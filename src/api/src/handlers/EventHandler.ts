@@ -24,7 +24,7 @@ export class EventHandler implements IEvent {
   public run(key: string, arg0?: any) {
     if (this.handlers.has(key))
       this.handlers.get(key)!.map((e) => {
-        if (arg0) e();
+        if (!arg0) e();
         else e(arg0);
       });
   }
