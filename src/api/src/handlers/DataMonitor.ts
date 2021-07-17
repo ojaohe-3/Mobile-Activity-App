@@ -17,15 +17,18 @@ export class Monitor {
     Monitor._instance = instance;
   }
 
-  private points: IDataPoint[] = [];
+  private points: IDataPoint[];
 
   constructor(websocket: WebSocketHandler) {
     websocket.listen().on("user:update", this.processData);
+    this.points = Array<IDataPoint>();
   }
 
-  private processData(data: IReciveFormat): void {
+  processData(data: IReciveFormat): void {
+
+    console.log("points")
     if (data.data)
-      this.points.push({
+      Monitor.instance.points.push({
         sessionId: data.id,
         userId: data.user._id,
         steps: data.data!.nStep,

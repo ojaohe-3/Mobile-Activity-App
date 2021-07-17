@@ -82,8 +82,7 @@ export class WebSocketHandler{
     try {
  
       const parsed = JSON.parse(data) as IReciveFormat;
-      const user = createProfile(parsed.user)
-      UserSessions.Instance.addUser(user); //TODO user heartbeat update
+      const user = parsed.user
       const session = await SessionController.Instance.getSession(parsed.id);
       const wsObject = {ws: ws, addr: req.socket.remoteAddress!}; //This might be shit
       if(!this._clients.has(parsed.id))
@@ -97,7 +96,6 @@ export class WebSocketHandler{
       const type : SessionTypes = SessionTypes[parsed.type as keyof typeof SessionTypes]
       switch (type) {
         case SessionTypes.JoinSession:
-          session.addprofile(user);
           this._eventHandler.run('user:joined', parsed);
           
           session.updateEvent((update : SessionUpdate) => {
@@ -116,11 +114,11 @@ export class WebSocketHandler{
               const data = parsed.data!
               SessionController.Instance.update(parsed.id, data.nStep, data.nPos);
               break;
-          case SessionTypes.CreateSession: //this will more likley be used through api
-            assert(parsed.session)
-            this._eventHandler.run('create', parsed);
-            SessionController.Instance.addSession(createSession(parsed.session!))
-            break;
+          // case SessionTypes.CreateSession: //this will more likley be used through api
+          //   assert(parsed.session)
+          //   this._eventHandler.run('create', parsed);
+          //   SessionController.Instance.addSession(createSession(parsed.session!))
+          //   break;
           case SessionTypes.LeaveSession:
             this._eventHandler.run('user:leave', parsed);
             SessionController.Instance.removeUser(parsed.id, parsed.user._id)
