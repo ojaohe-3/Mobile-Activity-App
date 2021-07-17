@@ -25,7 +25,7 @@ class BluetoothModule extends Subject{
   }
   void callback(Timer t){
     var r = Random();
-    process({'type': 'bluetooth', 'steps': r.nextInt(100)});
+    process({'type': 'bluetooth', 'steps': r.nextInt(10)});
     if(!this.active)
       t.cancel();
 

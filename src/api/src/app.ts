@@ -3,7 +3,7 @@ import express, { Application, NextFunction, Request, Response } from "express";
 import organizationAPI from "./routers/OrganizationAPI";
 import profileAPI from "./routers/ProfileAPI";
 import sessionAPI from "./routers/SessionAPI";
-
+import dataAPI from "./routers/DataAPI";
 
 const dotenv = require("dotenv");
 dotenv.config();
@@ -62,6 +62,7 @@ app.use((err: ResponseError, req: Request, res: Response, next: NextFunction) =>
 app.use('/api/v1/profile/', profileAPI);
 app.use('/api/v1/organization/', organizationAPI);
 app.use('/api/v1/session/', sessionAPI);
+app.use('/api/v1/data', dataAPI);
 //TODO add a statistics api to get statistics from specific sessions and total from all sessions
 
 const port = process.env.PORT || 5000;
